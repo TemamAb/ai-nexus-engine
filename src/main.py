@@ -1,5 +1,5 @@
 """
-AINEXUS Main Entry Point - Fixed for Render deployment
+AINEXUS Main Entry Point - Fixed encoding
 """
 import sys
 import os

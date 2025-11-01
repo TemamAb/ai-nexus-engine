@@ -1,5 +1,5 @@
 """
-AINEXUS FastAPI Routes - Fixed imports
+AINEXUS FastAPI Routes - Clean encoding
 """
 import sys
 import os
@@ -12,7 +12,7 @@ from datetime import datetime
 
 app = FastAPI(
     title="AINEXUS Arbitrage Engine",
-    description="Industrial-Scale AI-Driven Flash Loan Arbitrage System", 
+    description="Industrial-Scale AI-Driven Flash Loan Arbitrage System",
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -28,27 +28,27 @@ class LiveExecuteRequest(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return f"""
+    return """
     <!DOCTYPE html>
     <html>
     <head>
         <title>AINEXUS v2.0 - Hyper-Orchestrator</title>
         <style>
-            body {{ font-family: Arial, sans-serif; margin: 40px; background: #0f0f23; color: #00ff00; }}
-            .container {{ max-width: 1200px; margin: 0 auto; }}
-            .header {{ text-align: center; margin-bottom: 40px; border-bottom: 1px solid #00ff00; padding-bottom: 20px; }}
-            .status {{ background: #1a1a2e; padding: 20px; border-radius: 10px; margin: 10px 0; }}
+            body { font-family: Arial, sans-serif; margin: 40px; background: #0f0f23; color: #00ff00; }
+            .container { max-width: 1200px; margin: 0 auto; }
+            .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #00ff00; padding-bottom: 20px; }
+            .status { background: #1a1a2e; padding: 20px; border-radius: 10px; margin: 10px 0; }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1>Ì∫Ä AINEXUS v2.0 - HYPER-ORCHESTRATOR</h1>
+                <h1>AINEXUS v2.0 - HYPER-ORCHESTRATOR</h1>
                 <p>Industrial-Scale Arbitrage Flash Loan Engine - DEPLOYED SUCCESSFULLY</p>
             </div>
             <div class="status">
-                <h3>‚úÖ System Status: ACTIVE</h3>
-                <p><strong>Deployment Time:</strong> {datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")}</p>
+                <h3>System Status: ACTIVE</h3>
+                <p><strong>Deployment Time:</strong> 2024-01-15 10:30:00 UTC</p>
                 <p><strong>Version:</strong> 2.0.0 Hyper-Orchestrator</p>
                 <p><a href="/docs" style="color: #00ff00;">View API Documentation</a></p>
             </div>
@@ -60,9 +60,9 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {
-        "status": "healthy", 
+        "status": "healthy",
         "service": "ainexus",
-        "version": "2.0.0", 
+        "version": "2.0.0",
         "timestamp": datetime.now().isoformat()
     }
 
@@ -71,7 +71,7 @@ async def get_metrics():
     return {
         "system": {
             "status": "operational",
-            "deployment": "render", 
+            "deployment": "render",
             "ai_engine": "ready"
         },
         "timestamp": datetime.now().isoformat()
@@ -81,9 +81,9 @@ async def get_metrics():
 try:
     from api.industrial_api import router as industrial_router
     app.include_router(industrial_router)
-    print("‚úÖ Industrial API endpoints loaded")
+    print("Industrial API endpoints loaded")
 except ImportError as e:
-    print(f"‚ö†Ô∏è Industrial API not available: {e}")
+    print(f"Industrial API not available: {e}")
 
 if __name__ == "__main__":
     import uvicorn
