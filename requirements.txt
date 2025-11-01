@@ -1,36 +1,9 @@
-# Core Framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-pydantic==2.5.0
-
-# Blockchain & Web3
 web3==6.11.0
-eth-account==0.9.0
-eth-typing==3.5.0
-eth-abi==4.2.1
-
-# AI/ML & Data Science
-numpy==1.26.4  # Updated for Python 3.11 compatibility
-pandas==2.2.1
-scikit-learn==1.4.1.post1
-gym==0.26.2
-tensorflow==2.15.0  # Updated version
-
-# Data & Monitoring
-prometheus-client==0.20.0
+numpy==1.26.4
 requests==2.31.0
-websockets==12.0
-
-# Async & Utilities
-aiofiles==23.2.1
-python-json-logger==2.0.7
-pyyaml==6.0.1
-
-# Testing & Development
-pytest==7.4.4
-pytest-asyncio==0.23.5
 python-dotenv==1.0.0
-
-# Additional Dependencies
-kafka-python==2.0.2
-redis==5.0.1
+pyyaml==6.0.1
+aiofiles==23.2.1
+prometheus-client==0.20.0
