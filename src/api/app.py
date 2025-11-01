@@ -88,3 +88,11 @@ except ImportError as e:
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Import and include withdrawal system
+from api.withdrawal import router as withdrawal_router
+app.include_router(withdrawal_router)
+
+# Import and include transfer mode API
+from api.transfer_api import router as transfer_api_router
+app.include_router(transfer_api_router)
