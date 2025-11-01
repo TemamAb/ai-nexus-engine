@@ -204,3 +204,11 @@ async def system_status():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Import and include industrial API endpoints
+from src.api.industrial_api import router as industrial_router
+app.include_router(industrial_router)
+
+# Import and include industrial dashboard
+from src.api.dashboard import router as dashboard_router
+app.include_router(dashboard_router)
