@@ -96,3 +96,7 @@ app.include_router(withdrawal_router)
 # Import and include transfer mode API
 from api.transfer_api import router as transfer_api_router
 app.include_router(transfer_api_router)
+
+# Import and include PURE BACKEND profit API
+from api.profit_api import router as profit_api_router
+app.include_router(profit_api_router)
