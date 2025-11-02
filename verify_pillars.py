@@ -9,20 +9,20 @@ async def verify_pillars():
     print("Ì¥ç VERIFYING AI-NEXUS FOUR CORE PILLARS...")
     
     pillars = {
-        "PILLAR 1": "$100M Flash Loan Capacity",
+        "PILLAR 1": "$1'$1'$1'$100M' Flash Loan Capacity",
         "PILLAR 2": "Three-Tier Architecture", 
         "PILLAR 3": "Gasless Mode (ERC-4337)",
         "PILLAR 4": "AI Auto-Optimization 24/7/365"
     }
     
-    # Check Pillar 1: $100M Capacity
+    # Check Pillar 1: $1'$1'$100M' Capacity
     try:
         from src.executor.flashloan_executor import FlashLoanExecutor
         executor = FlashLoanExecutor()
         capacity = executor.get_capacity()
         print(f"‚úÖ PILLAR 1: ${capacity:,.0f} Flash Loan Capacity ACTIVE")
     except Exception as e:
-        print(f"‚ùå PILLAR 1: $100M Capacity - {e}")
+        print(f"‚ùå PILLAR 1: $1'$1'$100M' Capacity - {e}")
     
     # Check Pillar 2: Three-Tier Architecture
     try:

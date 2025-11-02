@@ -10,7 +10,7 @@
 - **API Documentation**: https://ai-nexus-engine.onrender.com/api/docs
 
 ### í¾¯ Core Features Deployed
-âœ… $100M Flash Loan Capacity
+âœ… $1'$1'$1'$100M' Flash Loan Capacity
 âœ… Three-Tier Architecture (8+6+3 Nodes)
 âœ… Gasless Mode (ERC-4337)
 âœ… AI Auto-Optimization 24/7/365
@@ -20,7 +20,7 @@
 ### í³ˆ Performance Metrics
 - Daily Profit Target: $250,000
 - Success Rate: 94.2%
-- Capital Deployed: $100,000,000
+- Capital Deployed: $1'$100,000,000'
 - Active Trades: 47
 
 ### í´§ Technical Stack

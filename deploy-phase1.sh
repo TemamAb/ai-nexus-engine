@@ -166,7 +166,7 @@ async def dashboard():
         <body>
             <h1>íº€ AI-Nexus Simulation Engine</h1>
             <div class="metric">
-                <h3>Virtual Capital: $100,000,000</h3>
+                <h3>Virtual Capital: $1'$100,000,000'</h3>
                 <h3 class="profit">Total Profit: ${total_profit:,.2f}</h3>
                 <p>Active Trades: {active_trades}</p>
                 <p>Mode: {mode}</p>

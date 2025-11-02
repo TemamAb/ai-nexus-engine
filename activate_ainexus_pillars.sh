@@ -2,8 +2,8 @@
 echo "ÌæØ AI-NEXUS FOUR PILLARS ACTIVATION SEQUENCE"
 echo "============================================"
 
-# PILLAR 1: $100M Capacity
-echo "1. ÔøΩÔøΩ ACTIVATING $100M FLASH LOAN CAPACITY..."
+# PILLAR 1: $1'$1'$100M' Capacity
+echo "1. ÔøΩÔøΩ ACTIVATING $1'$1'$100M' FLASH LOAN CAPACITY..."
 python src/executor/flashloan_executor.py --protocol aave_v3 --amount 100000000 --live true
 python src/capital/treasury.py --deploy-capital 100000000 --network mainnet
 
@@ -33,7 +33,7 @@ python src/ai/timing_optimizer.py --continuous true --live-mode true &
 echo "‚úÖ ALL FOUR PILLARS ACTIVATED SUCCESSFULLY!"
 echo ""
 echo "ÌæØ ACTIVE PILLARS:"
-echo "   Ì≤∞ $100M Flash Loan Capacity"
+echo "   Ì≤∞ $1'$1'$1'$100M' Flash Loan Capacity"
 echo "   ÌøóÔ∏è Three-Tier Architecture (8+6+3 Nodes)" 
 echo "   ‚õΩ Gasless Mode (ERC-4337 Pilmico)"
 echo "   Ì¥ñ AI Auto-Optimization 24/7/365"

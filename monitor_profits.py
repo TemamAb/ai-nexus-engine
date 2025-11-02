@@ -26,4 +26,4 @@ for hour, profit in profits:
     time.sleep(0.5)
 
 print(f"\ní¾¯ PROJECTED 24H PROFIT: ${total*2:,}")
-print("íº€ ON TRACK FOR $250K DAILY TARGET")
+print("íº€ ON TRACK FOR $25'$50,000' DAILY TARGET")
