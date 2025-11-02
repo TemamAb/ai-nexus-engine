@@ -128,7 +128,11 @@ async def dashboard():
     if quantum_engine.currency_mode == "ETH":
         wallet_display = quantum_engine.wallet_balance / 3500
 
-    html_content = """
+    # Build HTML content safely
+    html_parts = []
+    
+    # Header
+    html_parts.append("""
     <!DOCTYPE html>
     <html>
     <head>
@@ -357,7 +361,11 @@ async def dashboard():
                 <div class="header-main">
                     <h1>QUANTUM ARBITRAGE ENGINE</h1>
                     <div class="header-stats">
-    """ + f"{currency_symbol}{quantum_engine.total_profit:,} / {quantum_engine.operational_days} Days" + """
+    """)
+    
+    html_parts.append(f"{currency_symbol}{quantum_engine.total_profit:,} / {quantum_engine.operational_days} Days")
+    
+    html_parts.append("""
                     </div>
                 </div>
                 <div class="header-controls">
@@ -369,10 +377,12 @@ async def dashboard():
                         <option value="10000">10s</option>
                     </select>
                     <div class="currency-toggle">
-                        <div class="currency-option """ + ("active" if quantum_engine.currency_mode == "USD" else "") + """" 
-                             onclick="setCurrency('USD')">USD</div>
-                        <div class="currency-option """ + ("active" if quantum_engine.currency_mode == "ETH" else "") + """" 
-                             onclick="setCurrency('ETH')">ETH</div>
+    """)
+    
+    html_parts.append(f'<div class="currency-option {"active" if quantum_engine.currency_mode == "USD" else ""}" onclick="setCurrency(\'USD\')">USD</div>')
+    html_parts.append(f'<div class="currency-option {"active" if quantum_engine.currency_mode == "ETH" else ""}" onclick="setCurrency(\'ETH\')">ETH</div>')
+    
+    html_parts.append("""
                     </div>
                 </div>
             </div>
@@ -405,15 +415,37 @@ async def dashboard():
                     <div class="metric-grid">
                         <div class="metric-row">
                             <span class="metric-label">Total Profit</span>
-                            <span class="metric-value profit">""" + f"{currency_symbol}{quantum_engine.total_profit:,}" + """</span>
+                            <span class="metric-value profit">
+    """)
+    
+    html_parts.append(f"{currency_symbol}{quantum_engine.total_profit:,}")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Wallet Balance</span>
-                            <span class="metric-value profit">""" + f"{currency_symbol}{wallet_display:,.0f}" + """</span>
+                            <span class="metric-value profit">
+    """)
+    
+    html_parts.append(f"{currency_symbol}{wallet_display:,.0f}")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                         <div class="metric-row">
-                            <span class="metric-label">Profit/""" + profit_label + """</span>
-                            <span class="metric-value profit">""" + f"{currency_symbol}{display_value:,.2f}" + """</span>
+                            <span class="metric-label">Profit/""")
+    
+    html_parts.append(profit_label)
+    
+    html_parts.append("""</span>
+                            <span class="metric-value profit">
+    """)
+    
+    html_parts.append(f"{currency_symbol}{display_value:,.2f}")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Lifetime ROI</span>
@@ -423,8 +455,21 @@ async def dashboard():
                     <div style="margin-top: 6px;">
                         <select style="width: 100%; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 4px; font-size: 0.7em;" 
                                 onchange="setTimeframe(this.value)">
-    """ + "".join([f'<option value="{tf}" {"selected" if quantum_engine.profit_timeframe == tf else ""}>{label}</option>' 
-                   for tf, label in [("minute", "Per Minute"), ("hour", "Per Hour"), ("day", "Per Day"), ("lifetime", "Lifetime")]]) + """
+    """)
+    
+    # Timeframe options
+    timeframes = [
+        ("minute", "Per Minute"),
+        ("hour", "Per Hour"), 
+        ("day", "Per Day"),
+        ("lifetime", "Lifetime")
+    ]
+    
+    for tf, label in timeframes:
+        selected = "selected" if quantum_engine.profit_timeframe == tf else ""
+        html_parts.append(f'<option value="{tf}" {selected}>{label}</option>')
+    
+    html_parts.append("""
                         </select>
                     </div>
                 </div>
@@ -434,42 +479,78 @@ async def dashboard():
                     <div class="metric-grid">
                         <div class="metric-row">
                             <span class="metric-label">Total Available</span>
-                            <span class="metric-value">$""" + f"{quantum_engine.total_available_capital/1000000:.0f}M" + """</span>
+                            <span class="metric-value">
+    """)
+    
+    html_parts.append(f"${quantum_engine.total_available_capital/1000000:.0f}M")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Active Loans</span>
-                            <span class="metric-value">""" + f"{quantum_engine.active_loans}" + """</span>
+                            <span class="metric-value">
+    """)
+    
+    html_parts.append(f"{quantum_engine.active_loans}")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Total Utilization</span>
-                            <span class="metric-value">""" + f"{quantum_engine.loan_pool_utilization}%" + """</span>
+                            <span class="metric-value">
+    """)
+    
+    html_parts.append(f"{quantum_engine.loan_pool_utilization}%")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                     </div>
                     <div class="mini-grid">
-    """ + "".join([f"""
+    """)
+    
+    # Protocol utilization
+    for proto in ['aave', 'dydx', 'uniswap']:
+        html_parts.append(f"""
                         <div class="mini-row">
                             <span>{proto.upper()}</span>
                             <span>{quantum_engine.protocols[proto]['utilization']}%</span>
-                        </div>""" for proto in ['aave', 'dydx', 'uniswap']]) + """
+                        </div>""")
+    
+    html_parts.append("""
                     </div>
                 </div>
                 
                 <div class="metric-card">
                     <h3>Strategy Matrix</h3>
                     <div class="mini-grid">
-    """ + "".join([f"""
+    """)
+    
+    # Strategy performance
+    for name in ['triangular', 'cross_dex', 'flash_arb']:
+        html_parts.append(f"""
                         <div class="mini-row">
                             <span>{name.replace('_', ' ').title()}</span>
                             <span>{quantum_engine.strategies[name]['win_rate']}% | ${quantum_engine.strategies[name]['profit']/1000:.0f}K</span>
-                        </div>""" for name in ['triangular', 'cross_dex', 'flash_arb']]) + """
+                        </div>""")
+    
+    html_parts.append("""
                     </div>
                     <div style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 6px;">
                         <div class="mini-grid">
-    """ + "".join([f"""
+    """)
+    
+    # Profit by pairs
+    for pair in ['ETH/USDT', 'BTC/USDT', 'USDC/USDT']:
+        html_parts.append(f"""
                             <div class="mini-row">
                                 <span>{pair}</span>
                                 <span>{quantum_engine.pairs[pair]['percentage']}%</span>
-                            </div>""" for pair in ['ETH/USDT', 'BTC/USDT', 'USDC/USDT']]) + """
+                            </div>""")
+    
+    html_parts.append("""
                         </div>
                     </div>
                 </div>
@@ -477,11 +558,17 @@ async def dashboard():
                 <div class="metric-card">
                     <h3>Multi-Chain</h3>
                     <div class="mini-grid">
-    """ + "".join([f"""
+    """)
+    
+    # Chain analytics
+    for chain in ['ethereum', 'bsc', 'polygon', 'arbitrum']:
+        html_parts.append(f"""
                         <div class="mini-row">
                             <span>{chain.title()}</span>
                             <span>{quantum_engine.chains[chain]['percentage']}%</span>
-                        </div>""" for chain in ['ethereum', 'bsc', 'polygon', 'arbitrum']]) + """
+                        </div>""")
+    
+    html_parts.append("""
                     </div>
                     <div style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 6px; font-size: 0.7em;">
                         <div>Contracts: 8 deployed</div>
@@ -494,7 +581,13 @@ async def dashboard():
                     <div class="metric-grid">
                         <div class="metric-row">
                             <span class="metric-label">Total Runs</span>
-                            <span class="metric-value">""" + f"{quantum_engine.ai_optimization_runs:,}" + """</span>
+                            <span class="metric-value">
+    """)
+    
+    html_parts.append(f"{quantum_engine.ai_optimization_runs:,}")
+    
+    html_parts.append("""
+                            </span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Performance Î”</span>
@@ -502,22 +595,39 @@ async def dashboard():
                         </div>
                     </div>
                     <div class="mini-grid">
-    """ + "".join([f"""
+    """)
+    
+    # AI modules
+    for name in ['gas', 'routing', 'risk']:
+        html_parts.append(f"""
                         <div class="mini-row">
-                            <span>{name.replace('_', ' ').title()} AI</span>
+                            <span>{name.title()} AI</span>
                             <span class="positive">+{quantum_engine.ai_modules[name]['delta']}%</span>
-                        </div>""" for name in ['gas', 'routing', 'risk']]) + """
+                        </div>""")
+    
+    html_parts.append("""
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="0" max="100" value=\"""" + f"{quantum_engine.reinvestment_rate}" + """\" 
-                               class="slider" id="reinvestmentSlider" oninput="updateReinvestmentSlider(this.value)">
-                        <div class="slider-value">Reinvestment: """ + f"{quantum_engine.reinvestment_rate}" + """%</div>
+                        <input type="range" min="0" max="100" value=\"""")
+    
+    html_parts.append(f"{quantum_engine.reinvestment_rate}")
+    
+    html_parts.append("""\" class="slider" id="reinvestmentSlider" oninput="updateReinvestmentSlider(this.value)">
+                        <div class="slider-value">Reinvestment: """)
+    
+    html_parts.append(f"{quantum_engine.reinvestment_rate}")
+    
+    html_parts.append("""%</div>
                     </div>
                 </div>
             </div>
             
             <div class="footer">
-                íµ’ """ + f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}" + """ â€¢ Block: #18,642,291 â€¢ Uptime: 99.9%
+                íµ’ """)
+    
+    html_parts.append(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}")
+    
+    html_parts.append(""" â€¢ Block: #18,642,291 â€¢ Uptime: 99.9%
             </div>
         </div>
         
@@ -581,12 +691,17 @@ async def dashboard():
                 });
             }
             
-            refreshTimer = setInterval(refreshDashboard, """ + f"{quantum_engine.refresh_interval}" + """);
+            refreshTimer = setInterval(refreshDashboard, """)
+    
+    html_parts.append(f"{quantum_engine.refresh_interval}")
+    
+    html_parts.append(""");
         </script>
     </body>
     </html>
-    """
-    return HTMLResponse(content=html_content)
+    """)
+    
+    return HTMLResponse(content="".join(html_parts))
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
