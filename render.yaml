@@ -1,9 +1,9 @@
 services:
-  web:
-    name: ainexus-core
+  - type: web
+    name: ainexus
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python main.py
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+    startCommand: python deploy8001.py
     envVars:
-      - key: PYTHONPATH
-        value: /opt/render/project/src
+      - key: PYTHON_VERSION
+        value: 3.11.0
