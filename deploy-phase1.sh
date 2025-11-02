@@ -1,3 +1,59 @@
+#!/bin/bash
+echo "í¾¯ AI-NEXUS PHASE 1: SIMULATION MODE DEPLOYMENT"
+
+# Set environment variables
+export DEPLOYMENT_MODE="simulation"
+export VIRTUAL_CAPITAL="100000000"
+export BLOCKCHAIN_NETWORK="mainnet-fork"
+export PYTHONPATH="/opt/render/project/src:$PYTHONPATH"
+
+# Create optimized requirements.txt
+cat > requirements.txt << 'REQ_EOF'
+fastapi==0.104.1
+uvicorn==0.24.0
+web3==6.11.0
+aiohttp==3.9.1
+asyncio==3.4.3
+pydantic==2.5.0
+python-dotenv==1.0.0
+requests==2.31.0
+numpy==1.24.3
+pandas==2.1.4
+ccxt==4.1.60
+sqlalchemy==2.0.23
+apscheduler==3.10.4
+jinja2==3.1.2
+plotly==5.17.0
+REQ_EOF
+
+# Create simulation configuration
+mkdir -p config
+cat > config/simulation_config.yaml << 'CONFIG_EOF'
+simulation:
+  mode: "virtual"
+  virtual_capital: 100000000
+  scan_interval: 900
+  arbitrage_pairs:
+    - "ETH-USDC"
+    - "WBTC-USDT" 
+    - "LINK-ETH"
+    - "UNI-USDC"
+    - "AAVE-ETH"
+  
+risk_management:
+  max_position_size: 5000000
+  max_daily_loss: 50000
+  slippage_tolerance: 0.5
+  circuit_breakers: true
+
+performance:
+  daily_target: 250000
+  monthly_target: 7500000
+  success_threshold: 0.85
+CONFIG_EOF
+
+# Create enhanced app.py with simulation mode
+cat > app.py << 'APP_EOF'
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -147,3 +203,124 @@ async def run_simulation_cycle():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+APP_EOF
+
+# Create Render deployment configuration
+cat > render.yaml << 'RENDER_EOF'
+services:
+  - type: web
+    name: ai-nexus-simulation
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      echo "âœ… Dependencies installed"
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DEPLOYMENT_MODE
+        value: simulation
+      - key: VIRTUAL_CAPITAL
+        value: "100000000"
+      - key: BLOCKCHAIN_NETWORK
+        value: mainnet-fork
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"
+RENDER_EOF
+
+# Create deployment verification script
+cat > verify-deployment.py << 'VERIFY_EOF'
+#!/usr/bin/env python3
+import requests
+import time
+import sys
+
+def verify_deployment():
+    print("í´ Verifying AI-Nexus Simulation Deployment...")
+    
+    # Wait for deployment to be ready
+    time.sleep(10)
+    
+    try:
+        # Test health endpoint
+        response = requests.get("https://ai-nexus-simulation.onrender.com/health", timeout=30)
+        if response.status_code == 200:
+            print("âœ… Health check: PASSED")
+            print(f"   Response: {response.json()}")
+        else:
+            print("âŒ Health check: FAILED")
+            return False
+            
+        # Test metrics endpoint
+        response = requests.get("https://ai-nexus-simulation.onrender.com/api/metrics", timeout=30)
+        if response.status_code == 200:
+            print("âœ… Metrics endpoint: PASSED")
+            metrics = response.json()
+            print(f"   Virtual Capital: ${metrics.get('virtual_capital', 0):,}")
+            print(f"   Total Profit: ${metrics.get('total_profit', 0):,.2f}")
+        else:
+            print("âŒ Metrics endpoint: FAILED")
+            return False
+            
+        # Test dashboard
+        response = requests.get("https://ai-nexus-simulation.onrender.com/dashboard", timeout=30)
+        if response.status_code == 200:
+            print("âœ… Dashboard: PASSED")
+        else:
+            print("âŒ Dashboard: FAILED")
+            return False
+            
+        print("í¾‰ ALL CHECKS PASSED - AI-Nexus Simulation is LIVE!")
+        print("í¼ Dashboard URL: https://ai-nexus-simulation.onrender.com/dashboard")
+        print("í³Š API Base URL: https://ai-nexus-simulation.onrender.com")
+        return True
+        
+    except Exception as e:
+        print(f"âŒ Deployment verification failed: {e}")
+        return False
+
+if __name__ == "__main__":
+    success = verify_deployment()
+    sys.exit(0 if success else 1)
+VERIFY_EOF
+
+# Create one-click deployment script
+cat > one-click-deploy.sh << 'DEPLOY_EOF'
+#!/bin/bash
+echo "íº€ AI-NEXUS ONE-CLICK DEPLOYMENT STARTED"
+
+# Install dependencies
+echo "í³¦ Installing dependencies..."
+pip install -r requirements.txt
+
+# Deploy to Render
+echo "â˜ï¸ Deploying to Render.com..."
+render blueprint launch
+
+echo "â³ Waiting for deployment to complete..."
+sleep 30
+
+# Verify deployment
+echo "í´ Verifying deployment..."
+python verify-deployment.py
+
+if [ $? -eq 0 ]; then
+    echo "í¾‰ DEPLOYMENT SUCCESSFUL!"
+    echo "í¼ Access your simulation engine: https://ai-nexus-simulation.onrender.com"
+    echo "í³Š Dashboard: https://ai-nexus-simulation.onrender.com/dashboard"
+else
+    echo "âŒ Deployment verification failed. Check Render dashboard for details."
+    exit 1
+fi
+DEPLOY_EOF
+
+# Make scripts executable
+chmod +x one-click-deploy.sh
+chmod +x deploy-phase1.sh
+chmod +x verify-deployment.py
+
+echo "âœ… ALL FILES CREATED SUCCESSFULLY"
+echo "í¾¯ NEXT STEPS:"
+echo "   1. Run: ./one-click-deploy.sh"
+echo "   2. Wait for deployment to complete"
+echo "   3. Access your live simulation engine"
+

@@ -1,9 +1,18 @@
 services:
   - type: web
-    name: ainexus
+    name: ai-nexus-simulation
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python render_deploy.py
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      echo "✅ Dependencies installed"
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: DEPLOYMENT_MODE
+        value: simulation
+      - key: VIRTUAL_CAPITAL
+        value: "100000000"
+      - key: BLOCKCHAIN_NETWORK
+        value: mainnet-fork
+      - key: PYTHONPATH
+        value: "/opt/render/project/src"

@@ -1,0 +1,21 @@
+simulation:
+  mode: "virtual"
+  virtual_capital: 100000000
+  scan_interval: 900
+  arbitrage_pairs:
+    - "ETH-USDC"
+    - "WBTC-USDT" 
+    - "LINK-ETH"
+    - "UNI-USDC"
+    - "AAVE-ETH"
+  
+risk_management:
+  max_position_size: 5000000
+  max_daily_loss: 50000
+  slippage_tolerance: 0.5
+  circuit_breakers: true
+
+performance:
+  daily_target: 250000
+  monthly_target: 7500000
+  success_threshold: 0.85
