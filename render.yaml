@@ -3,7 +3,8 @@ services:
     name: ai-nexus-engine
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install --only-binary=all --no-build-isolation -r requirements.txt
     startCommand: python src/main.py
     envVars:
       - key: PORT
