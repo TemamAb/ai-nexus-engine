@@ -1,29 +1,67 @@
-from fastapi import FastAPI, BackgroundTasks
-from fastapi.responses import HTMLResponse
+# -*- coding: utf-8 -*-
+from fastapi import FastAPI, BackgroundTasks, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 import os
 import asyncio
 import random
-from datetime import datetime
-from typing import List, Dict
+import time
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional
+from pydantic import BaseModel
 
 app = FastAPI(title="AI-Nexus $100M Simulation Engine")
+
+class UserSettings(BaseModel):
+    refresh_interval: int = 5
+    reinvestment_rate: int = 75
+    risk_tolerance: str = "medium"
 
 class SimulationEngine:
     def __init__(self):
         self.virtual_capital = 100000000
         self.available_capital = 100000000
         self.total_profit = 0.0
+        self.reinvested_profit = 0.0
         self.active_trades = []
         self.completed_trades = []
         self.simulation_running = False
+        self.start_time = datetime.now()
+        self.user_settings = UserSettings()
         self.performance = {
             "total_trades": 0,
             "successful_trades": 0,
             "success_rate": 0.0,
             "daily_profit": 0.0,
-            "hourly_rate": 0.0
+            "hourly_profit": 0.0,
+            "profit_per_hour": 0.0,
+            "total_volume": 0.0
         }
+        self.hourly_profits = []
+    
+    def calculate_hourly_metrics(self):
+        """Calculate profit per hour metrics"""
+        if not self.completed_trades:
+            return 0.0
+        
+        # Calculate profit for last hour
+        one_hour_ago = datetime.now() - timedelta(hours=1)
+        recent_trades = [t for t in self.completed_trades 
+                        if datetime.fromisoformat(t["timestamp"].replace('Z', '+00:00')) > one_hour_ago]
+        
+        hourly_profit = sum(t["profit"] for t in recent_trades)
+        self.hourly_profits.append(hourly_profit)
+        
+        # Keep only last 24 hours
+        if len(self.hourly_profits) > 24:
+            self.hourly_profits.pop(0)
+        
+        # Calculate average profit per hour
+        if self.hourly_profits:
+            self.performance["profit_per_hour"] = sum(self.hourly_profits) / len(self.hourly_profits)
+        
+        return self.performance["profit_per_hour"]
     
     async def scan_opportunities(self):
         pairs = [
@@ -53,8 +91,14 @@ class SimulationEngine:
         success = random.random() > 0.12  # 88% success rate
         if success:
             profit_variation = random.uniform(-0.15, 0.2)
-            profit = opportunity["profit"] * (1 + profit_variation)
+            base_profit = opportunity["profit"]
+            
+            # Apply reinvestment multiplier
+            reinvest_multiplier = 1 + (self.user_settings.reinvestment_rate / 100)
+            profit = base_profit * (1 + profit_variation) * reinvest_multiplier
+            
             self.total_profit += profit
+            self.reinvested_profit += profit * (self.user_settings.reinvestment_rate / 100)
             self.performance["successful_trades"] += 1
             status = "completed"
             status_color = "#00ff00"
@@ -80,6 +124,9 @@ class SimulationEngine:
             if self.performance["total_trades"] > 0 else 0
         )
         
+        # Update hourly metrics
+        self.calculate_hourly_metrics()
+        
         return trade
 
 sim_engine = SimulationEngine()
@@ -101,6 +148,7 @@ async def dashboard():
     <head>
         <title>AI-Nexus $100M Dashboard</title>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             :root {{
                 --bg-primary: #0b0b15;
@@ -201,25 +249,12 @@ async def dashboard():
                 color: var(--success);
             }}
             
-            .capital {{
-                color: var(--success);
-                font-size: 2.5em;
-            }}
-            
-            .profit {{
-                color: var(--success);
-                font-size: 2.2em;
-            }}
-            
-            .success-rate {{
-                color: var(--accent-blue);
-                font-size: 2.2em;
-            }}
-            
-            .trades-count {{
-                color: var(--accent-purple);
-                font-size: 2.2em;
-            }}
+            .capital {{ color: var(--success); font-size: 2.5em; }}
+            .profit {{ color: var(--success); font-size: 2.2em; }}
+            .hourly-profit {{ color: var(--accent-blue); font-size: 2.2em; }}
+            .success-rate {{ color: var(--accent-blue); font-size: 2.2em; }}
+            .trades-count {{ color: var(--accent-purple); font-size: 2.2em; }}
+            .reinvestment {{ color: var(--warning); font-size: 2.2em; }}
             
             .controls {{
                 display: grid;
@@ -255,6 +290,71 @@ async def dashboard():
             .btn-danger {{
                 background: linear-gradient(135deg, var(--danger), #cc0000);
                 border-color: var(--danger);
+            }}
+            
+            .settings-panel {{
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 24px;
+                margin: 24px 0;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            }}
+            
+            .settings-panel h2 {{
+                color: var(--text-secondary);
+                font-size: 1.2em;
+                margin-bottom: 20px;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 12px;
+            }}
+            
+            .setting-group {{
+                margin-bottom: 20px;
+            }}
+            
+            .setting-label {{
+                display: block;
+                color: var(--text-secondary);
+                margin-bottom: 8px;
+                font-weight: 600;
+            }}
+            
+            .slider-container {{
+                background: var(--bg-secondary);
+                border-radius: 8px;
+                padding: 16px;
+                margin: 10px 0;
+            }}
+            
+            .slider {{
+                width: 100%;
+                height: 6px;
+                border-radius: 3px;
+                background: var(--border-color);
+                outline: none;
+                margin: 10px 0;
+            }}
+            
+            .slider-value {{
+                color: var(--accent-blue);
+                font-weight: bold;
+                font-size: 1.1em;
+            }}
+            
+            select {{
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                color: var(--text-primary);
+                padding: 10px 16px;
+                border-radius: 6px;
+                width: 100%;
+                font-size: 1em;
+            }}
+            
+            select:focus {{
+                border-color: var(--accent-blue);
+                outline: none;
             }}
             
             .content-grid {{
@@ -306,13 +406,8 @@ async def dashboard():
                 font-size: 0.9em;
             }}
             
-            .trade-success {{
-                border-left-color: var(--success);
-            }}
-            
-            .trade-failed {{
-                border-left-color: var(--danger);
-            }}
+            .trade-success {{ border-left-color: var(--success); }}
+            .trade-failed {{ border-left-color: var(--danger); }}
             
             .sparkline {{
                 height: 40px;
@@ -337,13 +432,21 @@ async def dashboard():
                 margin-right: 8px;
             }}
             
-            .status-active {{
-                background: var(--success);
-                box-shadow: 0 0 8px var(--success);
-            }}
+            .status-active {{ background: var(--success); box-shadow: 0 0 8px var(--success); }}
+            .status-inactive {{ background: var(--danger); }}
             
-            .status-inactive {{
-                background: var(--danger);
+            .notification {{
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 16px;
+                color: var(--text-primary);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                max-width: 300px;
             }}
         </style>
     </head>
@@ -352,14 +455,14 @@ async def dashboard():
             <!-- Header -->
             <div class="header">
                 <h1>Ì∫Ä AI-Nexus $100M Arbitrage Engine</h1>
-                <p>Real-time simulation with Grafana-inspired dark theme ‚Ä¢ Three-tier architecture ‚Ä¢ 24/7 operation</p>
+                <p>Real-time simulation with advanced metrics ‚Ä¢ User configurable settings ‚Ä¢ AI Optimization</p>
                 <div style="margin-top: 16px;">
                     <span class="status-indicator status-active"></span>
                     <span style="color: var(--success);">LIVE</span>
                     <span style="color: var(--text-secondary); margin: 0 16px;">|</span>
                     <span>Phase 1: Simulation Mode</span>
                     <span style="color: var(--text-secondary); margin: 0 16px;">|</span>
-                    <span>Last update: {datetime.now().strftime('%H:%M:%S')}</span>
+                    <span>Last update: <span id="lastUpdateTime">{datetime.now().strftime('%H:%M:%S')}</span></span>
                 </div>
             </div>
             
@@ -375,20 +478,62 @@ async def dashboard():
                 
                 <div class="metric-card">
                     <h3>Total Profit</h3>
-                    <div class="metric-value profit">${sim_engine.total_profit:,.2f}</div>
-                    <div class="metric-change">+{(sim_engine.total_profit/sim_engine.virtual_capital*10000):.4f}% ROI</div>
+                    <div class="metric-value profit" id="totalProfit">${sim_engine.total_profit:,.2f}</div>
+                    <div class="metric-change" id="roiDisplay">+{(sim_engine.total_profit/sim_engine.virtual_capital*10000):.4f}% ROI</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Profit/Hour</h3>
+                    <div class="metric-value hourly-profit" id="profitPerHour">${sim_engine.performance['profit_per_hour']:,.2f}</div>
+                    <div class="metric-change" id="hourlyRate">Avg last 24h</div>
                 </div>
                 
                 <div class="metric-card">
                     <h3>Success Rate</h3>
-                    <div class="metric-value success-rate">{sim_engine.performance['success_rate']:.1f}%</div>
-                    <div class="metric-change">{sim_engine.performance['successful_trades']} / {sim_engine.performance['total_trades']} trades</div>
+                    <div class="metric-value success-rate" id="successRate">{sim_engine.performance['success_rate']:.1f}%</div>
+                    <div class="metric-change" id="successBreakdown">{sim_engine.performance['successful_trades']} / {sim_engine.performance['total_trades']} trades</div>
                 </div>
                 
                 <div class="metric-card">
-                    <h3>Active Systems</h3>
-                    <div class="metric-value trades-count">{sim_engine.performance['total_trades']}</div>
-                    <div class="metric-change">Tier 1-3: Operational</div>
+                    <h3>AI Reinvestment</h3>
+                    <div class="metric-value reinvestment" id="reinvestmentRate">{sim_engine.user_settings.reinvestment_rate}%</div>
+                    <div class="metric-change" id="reinvestedAmount">${sim_engine.reinvested_profit:,.2f} compounded</div>
+                </div>
+            </div>
+            
+            <!-- User Settings Panel -->
+            <div class="settings-panel">
+                <h2>‚öôÔ∏è User Settings & AI Optimization</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div class="setting-group">
+                        <label class="setting-label">Ì¥Ñ Refresh Interval</label>
+                        <select id="refreshInterval" onchange="updateRefreshInterval()">
+                            <option value="1">1 second</option>
+                            <option value="2">2 seconds</option>
+                            <option value="3">3 seconds</option>
+                            <option value="5" selected>5 seconds</option>
+                            <option value="10">10 seconds</option>
+                        </select>
+                        <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 8px;">
+                            Controls how often metrics update
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label class="setting-label">ÌæØ AI Reinvestment Rate</label>
+                        <div class="slider-container">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>1%</span>
+                                <span class="slider-value" id="reinvestmentValue">{sim_engine.user_settings.reinvestment_rate}%</span>
+                                <span>100%</span>
+                            </div>
+                            <input type="range" min="1" max="100" value="{sim_engine.user_settings.reinvestment_rate}" 
+                                   class="slider" id="reinvestmentSlider" oninput="updateReinvestmentRate(this.value)">
+                            <div style="color: var(--text-muted); font-size: 0.9em; margin-top: 8px;">
+                                Percentage of profit automatically reinvested
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -426,6 +571,49 @@ async def dashboard():
         </div>
         
         <script>
+            let refreshInterval = 5000; // 5 seconds default
+            let refreshTimer;
+            
+            function showNotification(message, type = 'info') {{
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.style.borderLeft = `4px solid ${{type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--accent-blue)'}}`;
+                notification.innerHTML = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {{
+                    notification.remove();
+                }}, 3000);
+            }}
+            
+            function updateRefreshInterval() {{
+                const select = document.getElementById('refreshInterval');
+                const interval = parseInt(select.value) * 1000;
+                refreshInterval = interval;
+                
+                // Restart auto-refresh with new interval
+                clearInterval(refreshTimer);
+                refreshTimer = setInterval(refreshMetrics, refreshInterval);
+                
+                showNotification(`Ì¥Ñ Refresh interval set to ${{interval/1000}} seconds`, 'info');
+            }}
+            
+            function updateReinvestmentRate(value) {{
+                document.getElementById('reinvestmentValue').textContent = value + '%';
+                
+                // Send update to server
+                fetch('/api/settings/reinvestment', {{
+                    method: 'POST',
+                    headers: {{ 'Content-Type': 'application/json' }},
+                    body: JSON.stringify({{ reinvestment_rate: parseInt(value) }})
+                }}).then(response => response.json())
+                  .then(data => {{
+                      document.getElementById('reinvestmentRate').textContent = value + '%';
+                      showNotification(`ÌæØ Reinvestment rate updated to ${{value}}%`, 'success');
+                  }});
+            }}
+            
             async function startSimulation() {{
                 showNotification('Ì∫Ä Starting AI-Nexus simulation engine...', 'info');
                 try {{
@@ -445,7 +633,7 @@ async def dashboard():
                 try {{
                     const response = await fetch('/api/simulation/stop', {{method: 'POST'}});
                     const data = await response.json();
-                    showNotification(`Ìªë Simulation stopped. Final profit: $${{(data.total_profit || 0).toFixed(2)}`, 'info');
+                    showNotification(`Ìªë Simulation stopped. Final profit: $${{(data.total_profit || 0).toFixed(2)}}`, 'info');
                     refreshMetrics();
                 }} catch (error) {{
                     showNotification('‚ùå Failed to stop simulation', 'error');
@@ -470,7 +658,7 @@ async def dashboard():
                                     </div>
                                     <div style="text-align: right;">
                                         <div style="color: var(--success); font-weight: bold;">
-                                            +${{opp.profit.toFixed(2)}}
+                                            +$${{opp.profit.toFixed(2)}}
                                         </div>
                                         <div style="font-size: 0.8em; color: var(--text-secondary);">
                                             Spread: ${{(opp.spread * 100).toFixed(2)}}%
@@ -528,28 +716,34 @@ async def dashboard():
                     const data = await response.json();
                     
                     // Update metrics display
-                    document.querySelector('.profit').textContent = '$' + data.total_profit.toFixed(2);
-                    document.querySelector('.success-rate').textContent = data.performance.success_rate.toFixed(1) + '%';
-                    document.querySelector('.trades-count').textContent = data.performance.total_trades;
+                    document.getElementById('totalProfit').textContent = '$' + data.total_profit.toFixed(2);
+                    document.getElementById('profitPerHour').textContent = '$' + data.performance.profit_per_hour.toFixed(2);
+                    document.getElementById('successRate').textContent = data.performance.success_rate.toFixed(1) + '%';
+                    document.getElementById('reinvestmentRate').textContent = data.user_settings.reinvestment_rate + '%';
+                    document.getElementById('reinvestedAmount').textContent = '$' + data.reinvested_profit.toFixed(2) + ' compounded';
                     
                     // Update success rate breakdown
-                    const successElement = document.querySelector('.metric-change:nth-child(3)');
-                    if (successElement) {{
-                        successElement.textContent = `${{data.performance.successful_trades}} / ${{data.performance.total_trades}} trades`;
-                    }}
+                    document.getElementById('successBreakdown').textContent = 
+                        `${{data.performance.successful_trades}} / ${{data.performance.total_trades}} trades`;
+                    
+                    // Update ROI
+                    const roi = (data.total_profit / data.virtual_capital * 10000).toFixed(4);
+                    document.getElementById('roiDisplay').textContent = '+' + roi + '% ROI';
+                    
+                    // Update last update time
+                    document.getElementById('lastUpdateTime').textContent = new Date().toLocaleTimeString();
                     
                 }} catch (error) {{
                     console.error('Error refreshing metrics:', error);
                 }}
             }}
             
-            function showNotification(message, type) {{
-                // Simple notification - you can enhance this with a proper toast system
-                console.log(`[${{type.toUpperCase()}}] ${{message}}`);
-            }}
+            // Initialize settings
+            document.getElementById('refreshInterval').value = '5';
+            document.getElementById('reinvestmentSlider').value = {sim_engine.user_settings.reinvestment_rate};
             
-            // Auto-refresh metrics every 5 seconds
-            setInterval(refreshMetrics, 5000);
+            // Start auto-refresh
+            refreshTimer = setInterval(refreshMetrics, refreshInterval);
             
             // Initial load
             refreshMetrics();
@@ -570,12 +764,21 @@ async def get_trades():
 
 @app.get("/api/metrics")
 async def get_metrics():
+    sim_engine.calculate_hourly_metrics()
     return {
         "virtual_capital": sim_engine.virtual_capital,
         "total_profit": sim_engine.total_profit,
+        "reinvested_profit": sim_engine.reinvested_profit,
         "performance": sim_engine.performance,
+        "user_settings": sim_engine.user_settings.dict(),
         "simulation_active": sim_engine.simulation_running
     }
+
+@app.post("/api/settings/reinvestment")
+async def update_reinvestment_rate(request: Request):
+    data = await request.json()
+    sim_engine.user_settings.reinvestment_rate = data.get("reinvestment_rate", 75)
+    return {"status": "updated", "reinvestment_rate": sim_engine.user_settings.reinvestment_rate}
 
 @app.post("/api/simulation/start")
 async def start_simulation(background_tasks: BackgroundTasks):
