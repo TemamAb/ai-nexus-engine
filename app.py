@@ -44,3 +44,12 @@ async def health():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# CORE PILLARS OF AI-NEXUS ENGINE
+def get_core_pillars():
+    return {
+        "pillar_1": "$100M Flash Loan Capacity - Institutional capital deployment",
+        "pillar_2": "Three Tier System - 17-node distributed architecture", 
+        "pillar_3": "Gasless Mode/ERC-4337 - Pimlico account abstraction",
+        "pillar_4": "AI Auto-Optimization 24/7/365 - Continuous machine learning"
+    }
