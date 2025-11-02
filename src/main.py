@@ -122,13 +122,13 @@ async def dashboard():
     currency_symbol = "$"
     if quantum_engine.currency_mode == "ETH":
         display_value = profit_display / 3500
-        currency_symbol = "Îž"
+        currency_symbol = "ETH "
     
     wallet_display = quantum_engine.wallet_balance
     if quantum_engine.currency_mode == "ETH":
         wallet_display = quantum_engine.wallet_balance / 3500
 
-    html_content = f"""
+    html_content = """
     <!DOCTYPE html>
     <html>
     <head>
@@ -136,38 +136,26 @@ async def dashboard():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            /* Elegant Dark Theme Palette */
-            :root {{
-                /* Layer 1: Background - Carbon Black */
+            :root {
                 --bg-primary: #000000;
-                
-                /* Layer 2: Cards - Graphite Dark */
                 --bg-card: #1a1a1a;
-                
-                /* Layer 3: Borders - Obsidian Night */
                 --border-color: #333333;
-                
-                /* Layer 4: Highlights - Elegant Ash */
                 --highlight-color: #3a3a3a;
-                
-                /* Text Colors */
                 --text-primary: #ffffff;
                 --text-secondary: #b0b0b0;
                 --text-muted: #808080;
-                
-                /* Accent Colors */
                 --success: #00ff00;
                 --accent-blue: #0099ff;
                 --warning: #ff9900;
-            }}
+            }
             
-            * {{
+            * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
-            }}
+            }
             
-            body {{
+            body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 background: var(--bg-primary);
                 color: var(--text-primary);
@@ -175,15 +163,14 @@ async def dashboard():
                 font-weight: 400;
                 padding: 10px;
                 min-height: 100vh;
-            }}
+            }
             
-            .container {{
+            .container {
                 max-width: 1200px;
                 margin: 0 auto;
-            }}
+            }
             
-            /* Commanding Header */
-            .header {{
+            .header {
                 background: var(--bg-card);
                 border: 1px solid var(--border-color);
                 border-radius: 0px;
@@ -192,71 +179,69 @@ async def dashboard():
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-            }}
+            }
             
-            .header-main {{
+            .header-main {
                 display: flex;
                 align-items: center;
                 gap: 15px;
-            }}
+            }
             
-            .header h1 {{
+            .header h1 {
                 font-size: 1.4em;
                 font-weight: 600;
                 background: linear-gradient(90deg, var(--success), var(--accent-blue));
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
-            }}
+            }
             
-            .header-stats {{
+            .header-stats {
                 font-size: 0.9em;
                 color: var(--text-secondary);
-            }}
+            }
             
-            .header-controls {{
+            .header-controls {
                 display: flex;
                 gap: 10px;
                 align-items: center;
-            }}
+            }
             
-            .refresh-select {{
+            .refresh-select {
                 background: var(--bg-primary);
                 border: 1px solid var(--border-color);
                 color: var(--text-primary);
                 padding: 4px 8px;
                 border-radius: 3px;
                 font-size: 0.9em;
-            }}
+            }
             
-            .currency-toggle {{
+            .currency-toggle {
                 display: flex;
                 border: 1px solid var(--border-color);
                 border-radius: 3px;
                 overflow: hidden;
-            }}
+            }
             
-            .currency-option {{
+            .currency-option {
                 padding: 4px 8px;
                 background: var(--bg-primary);
                 cursor: pointer;
                 font-size: 0.9em;
-            }}
+            }
             
-            .currency-option.active {{
+            .currency-option.active {
                 background: var(--success);
                 color: #000000;
-            }}
+            }
             
-            /* Compact 6-Card Grid */
-            .dashboard-grid {{
+            .dashboard-grid {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
                 margin-bottom: 10px;
-            }}
+            }
             
-            /* Square Metric Cards */
-            .metric-card {{
+            .metric-card {
                 background: var(--bg-card);
                 border: 1px solid var(--border-color);
                 border-radius: 0px;
@@ -265,9 +250,9 @@ async def dashboard():
                 display: flex;
                 flex-direction: column;
                 min-height: 140px;
-            }}
+            }
             
-            .metric-card h3 {{
+            .metric-card h3 {
                 font-size: 0.8em;
                 color: var(--text-muted);
                 margin-bottom: 12px;
@@ -276,74 +261,67 @@ async def dashboard():
                 letter-spacing: 0.5px;
                 border-bottom: 1px solid var(--border-color);
                 padding-bottom: 6px;
-            }}
+            }
             
-            .metric-grid {{
+            .metric-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
                 flex: 1;
-            }}
+            }
             
-            .metric-row {{
+            .metric-row {
                 display: flex;
                 flex-direction: column;
                 gap: 2px;
-            }}
+            }
             
-            .metric-label {{
+            .metric-label {
                 font-size: 0.7em;
                 color: var(--text-muted);
-            }}
+            }
             
-            .metric-value {{
+            .metric-value {
                 font-size: 0.9em;
                 font-weight: 500;
-            }}
+            }
             
-            .profit {{
+            .profit {
                 color: var(--success);
-            }}
+            }
             
-            .positive {{
+            .positive {
                 color: var(--success);
-            }}
+            }
             
-            .accent {{
-                color: var(--accent-blue);
-            }}
-            
-            /* Status Indicators */
-            .status-dot {{
+            .status-dot {
                 width: 6px;
                 height: 6px;
                 border-radius: 50%;
                 background: var(--success);
                 box-shadow: 0 0 4px var(--success);
-            }}
+            }
             
-            /* Slider Styles */
-            .slider-container {{
+            .slider-container {
                 margin-top: 8px;
-            }}
+            }
             
-            .slider {{
+            .slider {
                 width: 100%;
                 height: 4px;
                 background: var(--border-color);
                 border-radius: 2px;
                 outline: none;
                 margin: 4px 0;
-            }}
+            }
             
-            .slider-value {{
+            .slider-value {
                 font-size: 0.7em;
                 color: var(--success);
                 text-align: center;
-            }}
+            }
             
-            /* Footer */
-            .footer {{
+            .footer {
                 background: var(--bg-card);
                 border: 1px solid var(--border-color);
                 border-radius: 0px;
@@ -351,37 +329,35 @@ async def dashboard():
                 font-size: 0.7em;
                 color: var(--text-muted);
                 text-align: center;
-            }}
+            }
             
-            /* Protocol and Pair Grids */
-            .mini-grid {{
+            .mini-grid {
                 display: grid;
                 grid-template-columns: 1fr;
                 gap: 4px;
                 margin-top: 6px;
-            }}
+            }
             
-            .mini-row {{
+            .mini-row {
                 display: flex;
                 justify-content: space-between;
                 font-size: 0.7em;
                 padding: 2px 0;
                 border-bottom: 1px solid var(--border-color);
-            }}
+            }
             
-            .mini-row:last-child {{
+            .mini-row:last-child {
                 border-bottom: none;
-            }}
+            }
         </style>
     </head>
     <body>
         <div class="container">
-            <!-- Commanding Header -->
             <div class="header">
                 <div class="header-main">
                     <h1>QUANTUM ARBITRAGE ENGINE</h1>
                     <div class="header-stats">
-                        {currency_symbol}{quantum_engine.total_profit:,} / {quantum_engine.operational_days} Days
+    """ + f"{currency_symbol}{quantum_engine.total_profit:,} / {quantum_engine.operational_days} Days" + """
                     </div>
                 </div>
                 <div class="header-controls">
@@ -393,17 +369,15 @@ async def dashboard():
                         <option value="10000">10s</option>
                     </select>
                     <div class="currency-toggle">
-                        <div class="currency-option {'active' if quantum_engine.currency_mode == 'USD' else ''}" 
+                        <div class="currency-option """ + ("active" if quantum_engine.currency_mode == "USD" else "") + """" 
                              onclick="setCurrency('USD')">USD</div>
-                        <div class="currency-option {'active' if quantum_engine.currency_mode == 'ETH' else ''}" 
+                        <div class="currency-option """ + ("active" if quantum_engine.currency_mode == "ETH" else "") + """" 
                              onclick="setCurrency('ETH')">ETH</div>
                     </div>
                 </div>
             </div>
             
-            <!-- 6-Card Dashboard Grid -->
             <div class="dashboard-grid">
-                <!-- Card 1: Connection Status -->
                 <div class="metric-card">
                     <h3>Connection Matrix</h3>
                     <div class="metric-grid">
@@ -426,21 +400,20 @@ async def dashboard():
                     </div>
                 </div>
                 
-                <!-- Card 2: Profit & Wallet Analytics -->
                 <div class="metric-card">
                     <h3>Profit & Wallet</h3>
                     <div class="metric-grid">
                         <div class="metric-row">
                             <span class="metric-label">Total Profit</span>
-                            <span class="metric-value profit">{currency_symbol}{quantum_engine.total_profit:,}</span>
+                            <span class="metric-value profit">""" + f"{currency_symbol}{quantum_engine.total_profit:,}" + """</span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Wallet Balance</span>
-                            <span class="metric-value profit">{currency_symbol}{wallet_display:,.0f}</span>
+                            <span class="metric-value profit">""" + f"{currency_symbol}{wallet_display:,.0f}" + """</span>
                         </div>
                         <div class="metric-row">
-                            <span class="metric-label">Profit/{profit_label}</span>
-                            <span class="metric-value profit">{currency_symbol}{display_value:,.2f}</span>
+                            <span class="metric-label">Profit/""" + profit_label + """</span>
+                            <span class="metric-value profit">""" + f"{currency_symbol}{display_value:,.2f}" + """</span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Lifetime ROI</span>
@@ -450,102 +423,65 @@ async def dashboard():
                     <div style="margin-top: 6px;">
                         <select style="width: 100%; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 4px; font-size: 0.7em;" 
                                 onchange="setTimeframe(this.value)">
-                            <option value="minute" {'selected' if quantum_engine.profit_timeframe == 'minute' else ''}>Per Minute</option>
-                            <option value="hour" {'selected' if quantum_engine.profit_timeframe == 'hour' else ''}>Per Hour</option>
-                            <option value="day" {'selected' if quantum_engine.profit_timeframe == 'day' else ''}>Per Day</option>
-                            <option value="lifetime" {'selected' if quantum_engine.profit_timeframe == 'lifetime' else ''}>Lifetime</option>
+    """ + "".join([f'<option value="{tf}" {"selected" if quantum_engine.profit_timeframe == tf else ""}>{label}</option>' 
+                   for tf, label in [("minute", "Per Minute"), ("hour", "Per Hour"), ("day", "Per Day"), ("lifetime", "Lifetime")]]) + """
                         </select>
                     </div>
                 </div>
                 
-                <!-- Card 3: Flash Loan Analytics -->
                 <div class="metric-card">
                     <h3>Flash Loan Engine</h3>
                     <div class="metric-grid">
                         <div class="metric-row">
                             <span class="metric-label">Total Available</span>
-                            <span class="metric-value">${quantum_engine.total_available_capital/1000000:.0f}M</span>
+                            <span class="metric-value">$""" + f"{quantum_engine.total_available_capital/1000000:.0f}M" + """</span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Active Loans</span>
-                            <span class="metric-value">{quantum_engine.active_loans}</span>
+                            <span class="metric-value">""" + f"{quantum_engine.active_loans}" + """</span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Total Utilization</span>
-                            <span class="metric-value">{quantum_engine.loan_pool_utilization}%</span>
+                            <span class="metric-value">""" + f"{quantum_engine.loan_pool_utilization}%" + """</span>
                         </div>
                     </div>
                     <div class="mini-grid">
+    """ + "".join([f"""
                         <div class="mini-row">
-                            <span>Aave</span>
-                            <span>{quantum_engine.protocols['aave']['utilization']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>dYdX</span>
-                            <span>{quantum_engine.protocols['dydx']['utilization']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Uniswap</span>
-                            <span>{quantum_engine.protocols['uniswap']['utilization']}%</span>
-                        </div>
+                            <span>{proto.upper()}</span>
+                            <span>{quantum_engine.protocols[proto]['utilization']}%</span>
+                        </div>""" for proto in ['aave', 'dydx', 'uniswap']]) + """
                     </div>
                 </div>
                 
-                <!-- Card 4: Strategy Performance -->
                 <div class="metric-card">
                     <h3>Strategy Matrix</h3>
                     <div class="mini-grid">
+    """ + "".join([f"""
                         <div class="mini-row">
-                            <span>Triangular</span>
-                            <span>{quantum_engine.strategies['triangular']['win_rate']}% | ${quantum_engine.strategies['triangular']['profit']/1000:.0f}K</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Cross-DEX</span>
-                            <span>{quantum_engine.strategies['cross_dex']['win_rate']}% | ${quantum_engine.strategies['cross_dex']['profit']/1000:.0f}K</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Flash Arb</span>
-                            <span>{quantum_engine.strategies['flash_arb']['win_rate']}% | ${quantum_engine.strategies['flash_arb']['profit']/1000:.0f}K</span>
-                        </div>
+                            <span>{name.replace('_', ' ').title()}</span>
+                            <span>{quantum_engine.strategies[name]['win_rate']}% | ${quantum_engine.strategies[name]['profit']/1000:.0f}K</span>
+                        </div>""" for name in ['triangular', 'cross_dex', 'flash_arb']]) + """
                     </div>
                     <div style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 6px;">
                         <div class="mini-grid">
+    """ + "".join([f"""
                             <div class="mini-row">
-                                <span>ETH/USDT</span>
-                                <span>{quantum_engine.pairs['ETH/USDT']['percentage']}%</span>
-                            </div>
-                            <div class="mini-row">
-                                <span>BTC/USDT</span>
-                                <span>{quantum_engine.pairs['BTC/USDT']['percentage']}%</span>
-                            </div>
-                            <div class="mini-row">
-                                <span>USDC/USDT</span>
-                                <span>{quantum_engine.pairs['USDC/USDT']['percentage']}%</span>
-                            </div>
+                                <span>{pair}</span>
+                                <span>{quantum_engine.pairs[pair]['percentage']}%</span>
+                            </div>""" for pair in ['ETH/USDT', 'BTC/USDT', 'USDC/USDT']]) + """
                         </div>
                     </div>
                 </div>
                 
-                <!-- Card 5: Chain Analytics -->
                 <div class="metric-card">
                     <h3>Multi-Chain</h3>
                     <div class="mini-grid">
+    """ + "".join([f"""
                         <div class="mini-row">
-                            <span>Ethereum</span>
-                            <span>{quantum_engine.chains['ethereum']['percentage']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>BSC</span>
-                            <span>{quantum_engine.chains['bsc']['percentage']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Polygon</span>
-                            <span>{quantum_engine.chains['polygon']['percentage']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Arbitrum</span>
-                            <span>{quantum_engine.chains['arbitrum']['percentage']}%</span>
-                        </div>
+                            <span>{chain.title()}</span>
+                            <span>{quantum_engine.chains[chain]['percentage']}%</span>
+                        </div>""" for chain in ['ethereum', 'bsc', 'polygon', 'arbitrum']]) + """
                     </div>
                     <div style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 6px; font-size: 0.7em;">
                         <div>Contracts: 8 deployed</div>
@@ -553,13 +489,12 @@ async def dashboard():
                     </div>
                 </div>
                 
-                <!-- Card 6: AI Optimization -->
                 <div class="metric-card">
                     <h3>AI Optimization</h3>
                     <div class="metric-grid">
                         <div class="metric-row">
                             <span class="metric-label">Total Runs</span>
-                            <span class="metric-value">{quantum_engine.ai_optimization_runs:,}</span>
+                            <span class="metric-value">""" + f"{quantum_engine.ai_optimization_runs:,}" + """</span>
                         </div>
                         <div class="metric-row">
                             <span class="metric-label">Performance Î”</span>
@@ -567,103 +502,86 @@ async def dashboard():
                         </div>
                     </div>
                     <div class="mini-grid">
+    """ + "".join([f"""
                         <div class="mini-row">
-                            <span>Gas AI</span>
-                            <span class="positive">+{quantum_engine.ai_modules['gas']['delta']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Routing AI</span>
-                            <span class="positive">+{quantum_engine.ai_modules['routing']['delta']}%</span>
-                        </div>
-                        <div class="mini-row">
-                            <span>Risk AI</span>
-                            <span class="positive">+{quantum_engine.ai_modules['risk']['delta']}%</span>
-                        </div>
+                            <span>{name.replace('_', ' ').title()} AI</span>
+                            <span class="positive">+{quantum_engine.ai_modules[name]['delta']}%</span>
+                        </div>""" for name in ['gas', 'routing', 'risk']]) + """
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="0" max="100" value="{quantum_engine.reinvestment_rate}" 
+                        <input type="range" min="0" max="100" value=\"""" + f"{quantum_engine.reinvestment_rate}" + """\" 
                                class="slider" id="reinvestmentSlider" oninput="updateReinvestmentSlider(this.value)">
-                        <div class="slider-value">Reinvestment: {quantum_engine.reinvestment_rate}%</div>
+                        <div class="slider-value">Reinvestment: """ + f"{quantum_engine.reinvestment_rate}" + """%</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Footer -->
             <div class="footer">
-                íµ’ {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')} â€¢ Block: #18,642,291 â€¢ Uptime: 99.9%
+                íµ’ """ + f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}" + """ â€¢ Block: #18,642,291 â€¢ Uptime: 99.9%
             </div>
         </div>
         
         <script>
             let refreshTimer;
             
-            // Set refresh interval
-            async function setRefreshInterval(interval) {{
-                const response = await fetch('/api/settings/refresh', {{
+            async function setRefreshInterval(interval) {
+                const response = await fetch('/api/settings/refresh', {
                     method: 'POST',
-                    headers: {{'Content-Type': 'application/json'}},
-                    body: JSON.stringify({{interval: parseInt(interval)}})
-                }});
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({interval: parseInt(interval)})
+                });
                 
                 clearInterval(refreshTimer);
                 refreshTimer = setInterval(refreshDashboard, parseInt(interval));
-            }}
+            }
             
-            // Set currency
-            async function setCurrency(currency) {{
-                await fetch('/api/settings/currency', {{
+            async function setCurrency(currency) {
+                await fetch('/api/settings/currency', {
                     method: 'POST',
-                    headers: {{'Content-Type': 'application/json'}},
-                    body: JSON.stringify({{currency: currency}})
-                }});
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({currency: currency})
+                });
                 location.reload();
-            }}
+            }
             
-            // Set timeframe
-            async function setTimeframe(timeframe) {{
-                await fetch('/api/settings/timeframe', {{
+            async function setTimeframe(timeframe) {
+                await fetch('/api/settings/timeframe', {
                     method: 'POST',
-                    headers: {{'Content-Type': 'application/json'}},
-                    body: JSON.stringify({{timeframe: timeframe}})
-                }});
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({timeframe: timeframe})
+                });
                 location.reload();
-            }}
+            }
             
-            // Update reinvestment slider
-            async function updateReinvestmentSlider(value) {{
+            async function updateReinvestmentSlider(value) {
                 document.querySelector('.slider-value').textContent = 'Reinvestment: ' + value + '%';
                 
-                await fetch('/api/settings/reinvestment', {{
+                await fetch('/api/settings/reinvestment', {
                     method: 'POST',
-                    headers: {{'Content-Type': 'application/json'}},
-                    body: JSON.stringify({{rate: parseInt(value)}})
-                }});
-            }}
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({rate: parseInt(value)})
+                });
+            }
             
-            // Refresh dashboard data
-            function refreshDashboard() {{
-                // Update timestamp in footer
+            function refreshDashboard() {
                 const now = new Date();
                 document.querySelector('.footer').innerHTML = 
-                    `íµ’ ${{now.toISOString().replace('T', ' ').substring(0, 19)}} UTC â€¢ Block: #18,642,291 â€¢ Uptime: 99.9%`;
+                    'íµ’ ' + now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC â€¢ Block: #18,642,291 â€¢ Uptime: 99.9%';
                 
-                // Simulate live data updates
                 const elements = document.querySelectorAll('.metric-value');
-                elements.forEach(element => {{
+                elements.forEach(element => {
                     const text = element.textContent;
-                    if (text.includes('$') && !text.includes('Total')) {{
-                        // Add small random growth to profit values
+                    if (text.includes('$') && !text.includes('Total')) {
                         const current = parseFloat(text.replace(/[$,]/g, ''));
-                        if (!isNaN(current)) {{
+                        if (!isNaN(current)) {
                             const growth = (Math.random() * 10);
-                            element.textContent = '$' + (current + growth).toLocaleString(undefined, {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
-                        }}
-                    }}
-                }});
-            }}
+                            element.textContent = '$' + (current + growth).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        }
+                    }
+                });
+            }
             
-            // Initialize
-            refreshTimer = setInterval(refreshDashboard, {quantum_engine.refresh_interval});
+            refreshTimer = setInterval(refreshDashboard, """ + f"{quantum_engine.refresh_interval}" + """);
         </script>
     </body>
     </html>
