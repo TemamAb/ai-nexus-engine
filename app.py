@@ -1,6 +1,6 @@
 """
-AI-NEXUS INSTITUTIONAL DASHBOARD - Main Entry Point
-This file is served by Render at: https://ai-nexus-engine.onrender.com
+AI-NEXUS INSTITUTIONAL DASHBOARD - PRODUCTION GRADE
+Maintaining ALL $100M flash loan capacity and institutional features
 """
 from fastapi import FastAPI
 import sys
@@ -10,11 +10,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 app = FastAPI(
     title="AI-Nexus Institutional Dashboard",
-    description="Enterprise Flash Loan Arbitrage Engine",
+    description="$100M Flash Loan Arbitrage Engine - Production Grade",
     version="2.0.0"
 )
 
-# Include institutional APIs
+# CRITICAL: Include ALL institutional APIs - NO COMPROMISES
 try:
     from src.api.institutional_api import router as institutional_router
     from src.api.wallet_api import router as wallet_router
@@ -27,30 +27,34 @@ try:
     app.include_router(live_metrics_router)
     app.include_router(execution_monitor_router)
     app.include_router(risk_dashboard_router)
-    print("‚úÖ Institutional APIs loaded")
+    print("‚úÖ ALL INSTITUTIONAL APIS LOADED - NO COMPROMISES")
 except Exception as e:
-    print(f"‚ö†Ô∏è API loading: {e}")
+    print(f"Ì∫® INSTITUTIONAL API ERROR: {e}")
+    # This is critical - we cannot proceed without institutional features
+    raise
 
 @app.get("/")
 async def root():
     return {
-        "service": "AI-Nexus Institutional Dashboard",
+        "system": "AI-Nexus Industrial Platform",
         "status": "active",
-        "dashboard": "/api/institutional/dashboard",
-        "docs": "/docs"
+        "capacity": "$100,000,000",
+        "daily_target": "$250,000",
+        "core_features": [
+            "Three-Tier Architecture (8+6+3 Nodes)",
+            "Gasless Mode (ERC-4337)",
+            "AI Auto-Optimization 24/7/365",
+            "5 Non-Custodial Wallet Support"
+        ],
+        "dashboard": "/api/institutional/dashboard"
     }
 
 @app.get("/dashboard")
-async def dashboard():
+async def dashboard_redirect():
     return {
         "message": "AI-Nexus Institutional Dashboard",
-        "access_points": {
-            "main_dashboard": "/api/institutional/dashboard",
-            "live_metrics": "/api/metrics/live",
-            "execution_monitor": "/api/execution/active-trades",
-            "risk_dashboard": "/api/risk/metrics",
-            "wallet_connect": "/api/wallet/supported-wallets"
-        }
+        "access_url": "https://ai-nexus-engine.onrender.com/api/institutional/dashboard",
+        "performance_guarantee": "FULL INSTITUTIONAL GRADE - NO COMPROMISES"
     }
 
 if __name__ == "__main__":
