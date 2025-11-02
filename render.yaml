@@ -1,9 +1,14 @@
 services:
   - type: web
-    name: ai-nexus-dashboard
+    name: ainexus-engine
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.18
+      - key: ETHEREUM_RPC
+        value: your_ethereum_rpc_url
+      - key: WALLET_ADDRESS
+        value: your_wallet_address
+      - key: PIMLICO_API_KEY
+        value: your_pimlico_api_key
+    healthCheckPath: /health

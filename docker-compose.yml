@@ -1,32 +1,26 @@
 version: '3.8'
 
 services:
-  ainexus-dashboard:
+  ainexus-engine:
     build: .
     ports:
       - "8000:8000"
     environment:
-      - PYTHONUNBUFFERED=1
-    volumes:
-      - .:/app
-    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+      - ETHEREUM_RPC=${ETHEREUM_RPC}
+      - WALLET_ADDRESS=${WALLET_ADDRESS}
+      - PIMLICO_API_KEY=${PIMLICO_API_KEY}
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-
-  # Add monitoring services if needed
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./logs:/app/logs
 
-  grafana:
-    image: grafana/grafana
+  # Optional: Add Redis for caching in future
+  redis:
+    image: redis:alpine
     ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=ainexus
+      - "6379:6379"
+    restart: unless-stopped

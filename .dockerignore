@@ -17,5 +17,5 @@ coverage.xml
 .git
 .mypy_cache
 .pytest_cache
-.history
+.hypothesis
 .DS_Store
