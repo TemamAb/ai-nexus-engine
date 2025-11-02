@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Industrial API - Minimal version for deployment
 """

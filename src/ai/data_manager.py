@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 AI Data Manager - Prepares and normalizes market data
 Code Source: Standard ML data preprocessing examples

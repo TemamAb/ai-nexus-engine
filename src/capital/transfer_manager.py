@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Auto/Manual Transfer Mode System
 Integrates with the profit withdrawal system EXACTLY as specified

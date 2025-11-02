@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Gasless Executor - ERC-4337 meta-transactions
 Code Source: ERC-4337 specification, Pimlico Paymaster docs

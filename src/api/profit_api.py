@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 PURE BACKEND Profit Withdrawal API
 NO FRONTEND - JSON API ONLY

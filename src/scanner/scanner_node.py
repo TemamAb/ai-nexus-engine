@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Sharded Market Scanner - Real-time opportunity detection
 Code Source: Hummingbot market scanner, Web3.py examples

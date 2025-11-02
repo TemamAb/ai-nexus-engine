@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Wallet Management - Multi-sig and transaction signing
 Code Source: OpenZeppelin multi-sig examples, Web3.py signing

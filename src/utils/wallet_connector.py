@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Wallet Connection Utility for MetaMask Detection
 Dependencies carefully identified for local machine detection

@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Delta Strategy Optimizer - Generates strategy variants
 Code Source: Custom AI orchestration based on RL patterns

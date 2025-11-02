@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Risk Management Engine - Slippage, volatility, MEV protection
 Code Source: Hummingbot risk modules, Flashbots MEV defense

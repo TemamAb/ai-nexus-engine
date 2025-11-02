@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Reinforcement Learning Module - RL for trade optimization
 Code Source: OpenAI Gym tutorials, RLlib examples

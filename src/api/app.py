@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 AINEXUS FastAPI Routes - Clean encoding
 """

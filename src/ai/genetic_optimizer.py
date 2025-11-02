@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Genetic Algorithm Optimizer - Strategy evolution
 Code Source: GA Python libraries, Hummingbot-inspired evolution

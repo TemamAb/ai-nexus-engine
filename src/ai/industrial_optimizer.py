@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 INDUSTRIAL-SCALE AI OPTIMIZATION ENGINE
 Unified enhancement framework for AINEXUS v2.0

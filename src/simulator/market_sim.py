@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Market Simulation Engine - Backtesting environment
 Code Source: Hummingbot backtesting, synthetic market simulation

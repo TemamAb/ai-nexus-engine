@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Flash Loan Executor - Atomic flash loan execution
 Code Source: AAVE V3 documentation, Balancer flash loan tutorials

@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 AI-Nexus Industrial Withdrawal Module
 Multi-sig secured withdrawal system for enterprise DeFi

@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Simulation to Live Adapter - Converts simulated trades to live execution
 Code Source: Custom Hummingbot + Web3.py pattern

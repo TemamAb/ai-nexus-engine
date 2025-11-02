@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Central AI Orchestrator - Manages distributed RL + GA agents
 Code Source: OpenAI Gym RL examples, Stable-Baselines3

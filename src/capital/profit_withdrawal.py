@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 PURE BACKEND Profit Withdrawal System
 NO FRONTEND - API ONLY with MetaMask integration

@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Prometheus Metrics - Monitoring endpoints for Grafana
 Code Source: Prometheus Python client examples

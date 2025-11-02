@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Live Trade Executor - Multi-node execution queue consumer
 Code Source: Web3.py transaction examples, AAVE documentation

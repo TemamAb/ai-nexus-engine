@@ -1,7 +1,5 @@
 import sys
-import os
-sys.path.append(os.path.dirname(__file__))
-
+sys.path.append('src')
 from fastapi import FastAPI
 import uvicorn
 import threading
@@ -13,22 +11,25 @@ app = FastAPI(title="AI-Nexus")
 class ThreeTierSystem:
     def __init__(self):
         self.seeker_count = 0
-        self.relayer_count = 0
+        self.relayer_count = 0 
         self.orchestrator_count = 0
         
     def seeker_loop(self):
         while True:
             self.seeker_count += 1
+            print(f"Seeker: Scanning markets... {self.seeker_count}")
             time.sleep(30)
             
     def relayer_loop(self):
         while True:
             self.relayer_count += 1
+            print(f"Relayer: Executing... {self.relayer_count}")
             time.sleep(60)
             
     def orchestrator_loop(self):
         while True:
             self.orchestrator_count += 1
+            print(f"Orchestrator: AI Cycle {self.orchestrator_count}")
             time.sleep(900)
 
 three_tier = ThreeTierSystem()
@@ -37,45 +38,34 @@ three_tier = ThreeTierSystem()
 def root():
     return {
         "status": "operational",
-        "three_tier_architecture": {
-            "tier_1": "seekers - market scanning",
-            "tier_2": "relayers - execution with flash loans & gasless", 
-            "tier_3": "orchestrator - AI optimization"
-        },
+        "system": "AI-Nexus Three-Tier Platform",
         "features": [
             "$100M Flash Loans",
-            "Gasless Transactions", 
-            "AI Optimization",
+            "Gasless Transactions",
+            "AI Optimization", 
             "Three-Tier Architecture"
         ],
         "schedule": "24/7/365"
     }
 
-@app.get("/tiers/status")
-def tiers_status():
+@app.get("/health")
+def health():
+    return {"status": "healthy", "time": datetime.now().isoformat()}
+
+@app.get("/status")
+def status():
     return {
-        "seekers": {"count": three_tier.seeker_count, "status": "active"},
-        "relayers": {"count": three_tier.relayer_count, "status": "active"},
-        "orchestrator": {"count": three_tier.orchestrator_count, "status": "active"}
+        "seekers": three_tier.seeker_count,
+        "relayers": three_tier.relayer_count,
+        "orchestrator": three_tier.orchestrator_count
     }
 
-def main():
-    PORT = 8000
-    
+def start_system():
     threading.Thread(target=three_tier.seeker_loop, daemon=True).start()
     threading.Thread(target=three_tier.relayer_loop, daemon=True).start()
     threading.Thread(target=three_tier.orchestrator_loop, daemon=True).start()
-    
-    print("AI-NEXUS THREE-TIER SYSTEM")
-    print("Tier 1: Seekers - ACTIVE")
-    print("Tier 2: Relayers - ACTIVE")
-    print("Tier 3: Orchestrator - ACTIVE")
-    print("Flash Loan: $100M READY")
-    print("Gasless: ENABLED")
-    print("AI: 15-min cycles")
-    print("24/7/365: OPERATIONAL")
-    
-    uvicorn.run(app, host="0.0.0.0", port=PORT)
 
 if __name__ == "__main__":
-    main()
+    print("Starting AI-Nexus Three-Tier System...")
+    start_system()
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")

@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Queue Manager - Resilient message queues for opportunity and execution
 Code Source: Custom async orchestration with Redis/Kafka patterns

@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 Simulation Executor - Sandbox trade execution
 Code Source: Hummingbot backtesting scripts
