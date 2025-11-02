@@ -79,7 +79,7 @@ async def get_metrics():
 
 # Import and include industrial API if available
 try:
-    from api.industrial_api import router as industrial_router
+    from . industrial_api import router as industrial_router
     app.include_router(industrial_router)
     print("Industrial API endpoints loaded")
 except ImportError as e:
@@ -90,13 +90,13 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 # Import and include withdrawal system
-from api.withdrawal import router as withdrawal_router
+from . withdrawal import router as withdrawal_router
 app.include_router(withdrawal_router)
 
 # Import and include transfer mode API
-from api.transfer_api import router as transfer_api_router
+from . transfer_api import router as transfer_api_router
 app.include_router(transfer_api_router)
 
 # Import and include PURE BACKEND profit API
-from api.profit_api import router as profit_api_router
+from . profit_api import router as profit_api_router
 app.include_router(profit_api_router)

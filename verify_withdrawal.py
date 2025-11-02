@@ -29,10 +29,10 @@ def verify_withdrawal_system():
     
     # Test imports
     try:
-        from api.withdrawal import router as withdrawal_router
+        from . withdrawal import router as withdrawal_router
         from utils.wallet_connector import WalletConnector
         from capital.transfer_manager import TransferManager, TransferMode
-        from api.transfer_api import router as transfer_api_router
+        from . transfer_api import router as transfer_api_router
         print("✅ All imports working correctly")
     except ImportError as e:
         print(f"❌ Import error: {e}")

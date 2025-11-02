@@ -5,65 +5,25 @@ services:
     build: .
     ports:
       - "8000:8000"
-      - "9090:9090"
     environment:
-      - ENVIRONMENT=development
-      - RPC_URL=${RPC_URL}
-      - PRIVATE_KEY=${PRIVATE_KEY}
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
     volumes:
-      - ./config:/app/config
       - ./logs:/app/logs
-    depends_on:
-      - redis
-      - prometheus
-    networks:
-      - ainexus-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - ainexus-network
+  # Add monitoring stack in future
+  # prometheus:
+  #   image: prom/prometheus
+  #   ports:
+  #     - "9090:9090"
 
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
-      - '--web.enable-lifecycle'
-    networks:
-      - ainexus-network
-
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - ./grafana/dashboard.json:/var/lib/grafana/dashboards/ainexus.json
-      - grafana-data:/var/lib/grafana
-    depends_on:
-      - prometheus
-    networks:
-      - ainexus-network
-
-volumes:
-  redis-data:
-  prometheus-data:
-  grafana-data:
-
-networks:
-  ainexus-network:
-    driver: bridge
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3000:3000"

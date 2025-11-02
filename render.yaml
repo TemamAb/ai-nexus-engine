@@ -1,10 +1,9 @@
 services:
-  - type: web
-    name: ainexus-quantum-engine
+  web:
+    name: ainexus-core
     env: python
-    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    startCommand: python main.py
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.9.0
+      - key: PYTHONPATH
+        value: /opt/render/project/src
