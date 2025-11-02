@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "Ì∫Ä AI-NEXUS DEPLOYMENT MONITOR"
+echo "Checking: https://ai-nexus-engine.onrender.com"
+echo ""
+echo "Deployment stages:"
+echo "‚öôÔ∏è  1. Build container (2-3 min)"
+echo "Ì≥¶ 2. Deploy to servers (2-3 min)" 
+echo "Ì¥ç 3. Health checks (1-2 min)"
+echo "‚úÖ 4. LIVE (Total: 5-8 min)"
+echo ""
+echo "Monitor build logs at: https://render.com/dashboard"
+echo "Final URL: https://ai-nexus-engine.onrender.com/dashboard"
