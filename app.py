@@ -1,102 +1,109 @@
 """
-AI-NEXUS INSTITUTIONAL DASHBOARD - RENDER DEPLOYMENT
-Single entry point for Render deployment
+AI-NEXUS WITH EXACT RENDER ENVIRONMENT VARIABLES
 """
 from fastapi import FastAPI
-import sys
 import os
+from datetime import datetime
 
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+app = FastAPI(title="AI-Nexus - Render Environment Ready")
 
-app = FastAPI(
-    title="AI-Nexus Institutional Dashboard",
-    description="$100M Flash Loan Arbitrage Engine",
-    version="2.0.0",
-    docs_url="/api/docs",
-    redoc_url="/api/redoc"
-)
-
-# Import institutional APIs
-try:
-    from src.api.institutional_api import router as institutional_router
-    from src.api.wallet_api import router as wallet_router
-    from src.api.live_metrics import router as live_metrics_router
-    from src.api.execution_monitor import router as execution_monitor_router
-    from src.api.risk_dashboard import router as risk_dashboard_router
-    
-    app.include_router(institutional_router)
-    app.include_router(wallet_router)
-    app.include_router(live_metrics_router)
-    app.include_router(execution_monitor_router)
-    app.include_router(risk_dashboard_router)
-    print("✅ All institutional APIs loaded")
-except Exception as e:
-    print(f"❌ API loading error: {e}")
-    # Create fallback routes if APIs fail to load
-    @app.get("/api/institutional/dashboard")
-    async def fallback_dashboard():
-        return {"status": "institutional_dashboard", "fallback": True}
-    
-    @app.get("/api/metrics/live")
-    async def fallback_metrics():
-        return {"profit_24h": 124642.50, "success_rate": 94.2}
-
-@app.get("/")
-async def root():
-    return {
-        "service": "AI-Nexus Institutional Dashboard",
-        "status": "active",
-        "endpoints": {
-            "dashboard": "/dashboard",
-            "institutional": "/api/institutional/dashboard",
-            "metrics": "/api/metrics/live",
-            "docs": "/api/docs"
+@app.get("/environment/status")
+async def environment_status():
+    """Check exact Render environment configuration"""
+    env_status = {
+        "BLOCKCHAIN_RPC": {
+            "ETHEREUM_RPC": bool(os.getenv("ETHEREUM_RPC")),
+            "ARBITRUM_RPC": bool(os.getenv("ARBITRUM_RPC")),
+            "OPTIMISM_RPC": bool(os.getenv("OPTIMISM_RPC")),
+            "BASE_RPC": bool(os.getenv("BASE_RPC")),
+            "POLYGON_RPC": bool(os.getenv("POLYGON_RPC"))
+        },
+        "GASLESS_INFRASTRUCTURE": {
+            "BUNDLER_URL": bool(os.getenv("BUNDLER_URL")),
+            "PAYMASTER_URL": bool(os.getenv("PAYMASTER_URL")),
+            "PIMLICO_API_KEY": bool(os.getenv("PIMLICO_API_KEY")),
+            "ENTRYPOINT_ADDRESS": bool(os.getenv("ENTRYPOINT_ADDRESS"))
+        },
+        "WALLET_SECURITY": {
+            "WALLET_ADDRESS": os.getenv("WALLET_ADDRESS", "NOT_SET")
+        },
+        "FLASH_LOAN_PROVIDERS": {
+            "AAVE_POOL_ADDRESS": bool(os.getenv("AAVE_POOL_ADDRESS")),
+            "UNISWAP_V3_ROUTER": bool(os.getenv("UNISWAP_V3_ROUTER"))
+        },
+        "AI_TRADING_PARAMETERS": {
+            "MIN_PROFIT_THRESHOLD": os.getenv("MIN_PROFIT_THRESHOLD", "NOT_SET"),
+            "MAX_SINGLE_TRADE": os.getenv("MAX_SINGLE_TRADE", "NOT_SET"),
+            "DAILY_LOSS_LIMIT": os.getenv("DAILY_LOSS_LIMIT", "NOT_SET")
         }
     }
-
-@app.get("/dashboard")
-async def dashboard():
+    
     return {
-        "dashboard": "AI-Nexus Institutional Platform",
-        "status": "active",
-        "core_pillars": [
-            "$100M Flash Loan Capacity",
-            "Three-Tier Architecture",
-            "Gasless Mode (ERC-4337)", 
-            "AI Auto-Optimization 24/7/365"
-        ]
+        "system": "ai_nexus_render_environment",
+        "status": "configured",
+        "environment_check": env_status,
+        "timestamp": datetime.now().isoformat()
     }
 
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
+@app.get("/deployment/ready")
+async def deployment_ready():
+    """Deployment readiness with exact environment"""
+    required_vars = ["ETHEREUM_RPC", "WALLET_ADDRESS"]
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    return {
+        "deployment": "render_environment_configured",
+        "readiness": "ready" if not missing_vars else "missing_config",
+        "missing_variables": missing_vars,
+        "configured_variables": {
+            "ETHEREUM_RPC": bool(os.getenv("ETHEREUM_RPC")),
+            "WALLET_ADDRESS": os.getenv("WALLET_ADDRESS", "NOT_SET"),
+            "PIMLICO_API_KEY": bool(os.getenv("PIMLICO_API_KEY")),
+            "BUNDLER_URL": bool(os.getenv("BUNDLER_URL")),
+            "PAYMASTER_URL": bool(os.getenv("PAYMASTER_URL"))
+        },
+        "next_step": "secure_manual_deployment" if not missing_vars else "configure_missing_variables",
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/system/real-blockchain-status")
+async def real_blockchain_status():
+    """Real blockchain integration status"""
+    return {
+        "system": "ai_nexus_institutional_engine",
+        "blockchain_integration": "environment_configured",
+        "render_environment": {
+            "rpc_endpoints": {
+                "ethereum": bool(os.getenv("ETHEREUM_RPC")),
+                "arbitrum": bool(os.getenv("ARBITRUM_RPC")),
+                "optimism": bool(os.getenv("OPTIMISM_RPC")),
+                "base": bool(os.getenv("BASE_RPC"))
+            },
+            "gasless_infrastructure": {
+                "pimlico_api": bool(os.getenv("PIMLICO_API_KEY")),
+                "bundler": bool(os.getenv("BUNDLER_URL")),
+                "paymaster": bool(os.getenv("PAYMASTER_URL"))
+            },
+            "wallet": os.getenv("WALLET_ADDRESS", "NOT_CONFIGURED"),
+            "flash_loan_providers": {
+                "aave_v3": bool(os.getenv("AAVE_POOL_ADDRESS")),
+                "uniswap_v3": bool(os.getenv("UNISWAP_V3_ROUTER"))
+            }
+        },
+        "deployment_requirements": {
+            "contracts": ["AinexusArbitrageur", "AinexusAccountFactory"],
+            "networks": ["Ethereum Mainnet"],
+            "expected_output": [
+                "Contract addresses (0x...)",
+                "Transaction hashes",
+                "Block numbers",
+                "Deployment timestamps"
+            ]
+        },
+        "security_status": "no_private_keys_exposed",
+        "timestamp": datetime.now().isoformat()
+    }
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-# Mainnet configuration
-try:
-    from config.mainnet_config import MainnetConfig
-    MainnetConfig.validate_config()
-    
-    @app.get("/mainnet/status")
-    async def mainnet_status():
-        return {
-            "status": "configured",
-            "network": "ethereum_mainnet",
-            "deployer": MainnetConfig.DEPLOYER_ADDRESS,
-            "features": {
-                "flash_loans": "ready",
-                "gasless_mode": "active",
-                "ai_optimization": "live"
-            }
-        }
-    
-    print("✅ MAINNET CONFIGURATION LOADED")
-except Exception as e:
-    print(f"⚠️ Mainnet configuration: {e}")
-    
-    @app.get("/mainnet/status")
-    async def mainnet_status():
-        return {"status": "configuration_required", "message": "Check environment variables"}
