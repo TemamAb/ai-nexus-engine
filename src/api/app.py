@@ -101,3 +101,24 @@ app.include_router(transfer_api_router)
 # Import and include PURE BACKEND profit API
 from . profit_api import router as profit_api_router
 app.include_router(profit_api_router)
+
+# Institutional Dashboard APIs - Enhanced with industry standards
+from .institutional_api import router as institutional_router
+from .wallet_api import router as wallet_router
+from .live_metrics import router as live_metrics_router
+from .execution_monitor import router as execution_monitor_router
+from .risk_dashboard import router as risk_dashboard_router
+
+app.include_router(institutional_router)
+app.include_router(wallet_router)
+app.include_router(live_metrics_router)
+app.include_router(execution_monitor_router)
+app.include_router(risk_dashboard_router)
+
+# Service layer imports for institutional backend
+try:
+    from src.services.wallet_service import wallet_service
+    from src.services.metrics_service import metrics_service
+    print("✅ Institutional services loaded successfully")
+except ImportError as e:
+    print(f"⚠️  Service import warning: {e}")

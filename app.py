@@ -1,149 +1,37 @@
-from fastapi import FastAPI, BackgroundTasks
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+import sys
 import os
-import asyncio
-from datetime import datetime
-import json
 
-app = FastAPI(title="AI-Nexus Simulation Engine", version="1.0")
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-# Simulation mode configuration
-DEPLOYMENT_MODE = os.getenv("DEPLOYMENT_MODE", "simulation")
-VIRTUAL_CAPITAL = float(os.getenv("VIRTUAL_CAPITAL", 100000000))
+app = FastAPI()
 
-class SimulationEngine:
-    def __init__(self):
-        self.virtual_capital = VIRTUAL_CAPITAL
-        self.active_trades = []
-        self.total_profit = 0.0
-        self.performance_metrics = {
-            "total_trades": 0,
-            "successful_trades": 0,
-            "total_volume": 0.0,
-            "avg_profit_per_trade": 0.0
-        }
-    
-    async def scan_arbitrage_opportunities(self):
-        """Simulate arbitrage opportunity scanning"""
-        return [
-            {
-                "pair": "ETH-USDC",
-                "exchange_a": "uniswap",
-                "exchange_b": "sushiswap", 
-                "spread": 0.015,
-                "estimated_profit": 1500,
-                "timestamp": datetime.now().isoformat()
-            }
-        ]
-    
-    async def execute_virtual_trade(self, opportunity):
-        """Execute virtual trade for simulation"""
-        trade_result = {
-            "trade_id": f"sim_{datetime.now().timestamp()}",
-            "pair": opportunity["pair"],
-            "amount": opportunity["estimated_profit"] * 100,
-            "profit": opportunity["estimated_profit"],
-            "timestamp": datetime.now().isoformat(),
-            "status": "completed"
-        }
-        
-        self.active_trades.append(trade_result)
-        self.total_profit += trade_result["profit"]
-        self.performance_metrics["total_trades"] += 1
-        self.performance_metrics["successful_trades"] += 1
-        self.performance_metrics["total_volume"] += trade_result["amount"]
-        
-        return trade_result
+# Include institutional APIs
+from src.api.institutional_api import router as institutional_router
+from src.api.wallet_api import router as wallet_router
+from src.api.live_metrics import router as live_metrics_router
+from src.api.execution_monitor import router as execution_monitor_router
+from src.api.risk_dashboard import router as risk_dashboard_router
 
-simulation_engine = SimulationEngine()
+app.include_router(institutional_router)
+app.include_router(wallet_router)
+app.include_router(live_metrics_router)
+app.include_router(execution_monitor_router)
+app.include_router(risk_dashboard_router)
 
 @app.get("/")
 async def root():
-    return {"status": "AI-Nexus Simulation Engine", "mode": DEPLOYMENT_MODE}
+    return {"message": "AI-Nexus Institutional Engine"}
 
-@app.get("/health")
-async def health_check():
-    return {
-        "status": "healthy",
-        "mode": DEPLOYMENT_MODE,
-        "virtual_capital": VIRTUAL_CAPITAL,
-        "timestamp": datetime.now().isoformat()
-    }
-
-@app.post("/api/simulation/start")
-async def start_simulation(background_tasks: BackgroundTasks):
-    """Start the simulation engine"""
-    background_tasks.add_task(run_simulation_cycle)
-    return {"status": "simulation_started", "virtual_capital": VIRTUAL_CAPITAL}
-
-@app.get("/api/metrics")
-async def get_metrics():
-    """Get simulation performance metrics"""
-    return {
-        "virtual_capital": VIRTUAL_CAPITAL,
-        "total_profit": simulation_engine.total_profit,
-        "active_trades": len(simulation_engine.active_trades),
-        "performance": simulation_engine.performance_metrics,
-        "simulation_mode": DEPLOYMENT_MODE
-    }
-
-@app.get("/api/opportunities")
-async def get_opportunities():
-    """Get current arbitrage opportunities"""
-    opportunities = await simulation_engine.scan_arbitrage_opportunities()
-    return {"opportunities": opportunities}
-
-@app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard():
-    """Simulation Dashboard"""
-    return """
-    <html>
-        <head>
-            <title>AI-Nexus Simulation Dashboard</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; }
-                .metric { background: #f5f5f5; padding: 20px; margin: 10px; border-radius: 5px; }
-                .profit { color: green; font-weight: bold; }
-            </style>
-        </head>
-        <body>
-            <h1>íº€ AI-Nexus Simulation Engine</h1>
-            <div class="metric">
-                <h3>Virtual Capital: $100,000,000</h3>
-                <h3 class="profit">Total Profit: ${total_profit:,.2f}</h3>
-                <p>Active Trades: {active_trades}</p>
-                <p>Mode: {mode}</p>
-            </div>
-            <button onclick="startSimulation()">Start Simulation</button>
-            <script>
-                function startSimulation() {
-                    fetch('/api/simulation/start', {method: 'POST'})
-                    .then(response => response.json())
-                    .then(data => alert('Simulation Started!'));
-                }
-            </script>
-        </body>
-    </html>
-    """.format(
-        total_profit=simulation_engine.total_profit,
-        active_trades=len(simulation_engine.active_trades),
-        mode=DEPLOYMENT_MODE
-    )
-
-async def run_simulation_cycle():
-    """Background task to run simulation cycles"""
-    while True:
-        try:
-            opportunities = await simulation_engine.scan_arbitrage_opportunities()
-            for opportunity in opportunities:
-                if opportunity["spread"] > 0.01:  # 1% threshold
-                    await simulation_engine.execute_virtual_trade(opportunity)
-            await asyncio.sleep(60)  # Run every minute for demo
-        except Exception as e:
-            print(f"Simulation error: {e}")
-            await asyncio.sleep(30)
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/dashboard")
+async def dashboard_redirect():
+    return JSONResponse({
+        "dashboard": "https://ai-nexus-engine.onrender.com/api/institutional/dashboard",
+        "endpoints": {
+            "metrics": "/api/metrics/live",
+            "execution": "/api/execution/active-trades", 
+            "risk": "/api/risk/metrics",
+            "wallets": "/api/wallet/supported-wallets"
+        }
+    })
