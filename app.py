@@ -74,3 +74,29 @@ async def health():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Mainnet configuration
+try:
+    from config.mainnet_config import MainnetConfig
+    MainnetConfig.validate_config()
+    
+    @app.get("/mainnet/status")
+    async def mainnet_status():
+        return {
+            "status": "configured",
+            "network": "ethereum_mainnet",
+            "deployer": MainnetConfig.DEPLOYER_ADDRESS,
+            "features": {
+                "flash_loans": "ready",
+                "gasless_mode": "active",
+                "ai_optimization": "live"
+            }
+        }
+    
+    print("✅ MAINNET CONFIGURATION LOADED")
+except Exception as e:
+    print(f"⚠️ Mainnet configuration: {e}")
+    
+    @app.get("/mainnet/status")
+    async def mainnet_status():
+        return {"status": "configuration_required", "message": "Check environment variables"}
