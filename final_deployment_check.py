@@ -51,11 +51,11 @@ print("   https://ai-nexus-engine.onrender.com/system/real-blockchain-status")
 
 print("")
 print("ÌæØ ALL FOUR PILLARS READY FOR DEPLOYMENT:")
-print("   1. Ì≤∞ $1'$1'$1'$100M' Flash Loan Capacity (Aave V3)")
+print("   1. Ì≤∞ $1'$1'$1'$1$1$100M' Flash Loan Capacity (Aave V3)")
 print("   2. ÌøóÔ∏è Three-Tier System (17 nodes)")
 print("   3. ‚õΩ Gasless Mode (Pimlico ERC-4337)")
 print("   4. Ì¥ñ AI Auto-Optimization 24/7/365")
 
 print("")
 print("Ì∫Ä MANUAL DEPLOYMENT: INITIATE NOW!")
-print("Ì≤µ REAL $1'$1'$100M' FLASH LOAN OPERATIONS AWAITING!")
+print("Ì≤µ REAL $1'$1'$1$1$100M' FLASH LOAN OPERATIONS AWAITING!")

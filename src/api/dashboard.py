@@ -51,7 +51,7 @@ async def industrial_dashboard(request: Request):
         <div class="container">
             <div class="header">
                 <h1>í¿­ AINEXUS v2.0 - INDUSTRIAL SCALE DASHBOARD</h1>
-                <p>AI-Driven Arbitrage at $1'$1'$100M' Scale | 15-Minute Optimization Cycles</p>
+                <p>AI-Driven Arbitrage at $1'$1'$1$1$100M' Scale | 15-Minute Optimization Cycles</p>
             </div>
             
             <div class="grid">
@@ -94,7 +94,7 @@ async def industrial_dashboard(request: Request):
                 <div class="timeline-phase"><strong>Day 8-15:</strong> Validation Phase - $2.1M to $4.6M</div>
                 <div class="timeline-phase"><strong>Day 16-30:</strong> Acceleration Phase - $4.6M to $21M</div>
                 <div class="timeline-phase"><strong>Day 31-60:</strong> Industrial Scale - $21M to $50M</div>
-                <div class="timeline-phase"><strong>Day 61-90:</strong> Market Dominance - $50M to $1'$1'$100M'</div>
+                <div class="timeline-phase"><strong>Day 61-90:</strong> Market Dominance - $50M to $1'$1'$1$1$100M'</div>
             </div>
             
             <div class="card">
