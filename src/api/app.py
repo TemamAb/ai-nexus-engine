@@ -35,8 +35,8 @@ async def root():
         "status": "OPERATIONAL",
         "service": "AI-Nexus Institutional Backend",
         "version": "1.0.0",
-        "capacity": "$1$1$1$1$1$1$1$100M Flash Loans",
-        "profit_target": "$250K Daily"
+        "capacity": "$1$1$1$1$1$1$1$1$100M Flash Loans",
+        "profit_target": "$250,000 Daily"
     }
 
 @app.get("/health")
