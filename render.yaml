@@ -1,10 +1,22 @@
 services:
   - type: web
-    name: aineon-dashboard
-    env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run preview
+    name: ainexus-engine
+    env: docker
+    docker:
+      dockerfile: Dockerfile
+      dockerContext: .
     envVars:
-      - key: NODE_VERSION
-        value: 18.17.0
-    staticPublishPath: ./dist
+      - key: ENVIRONMENT
+        value: production
+      - key: DAILY_PROFIT_TARGET
+        value: "250000"
+      - key: CAPACITY
+        value: "100000000"
+      - key: LOG_LEVEL
+        value: INFO
+    healthCheckPath: /health
+    autoDeploy: true
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 10
