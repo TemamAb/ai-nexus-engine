@@ -1,22 +1,21 @@
 services:
   - type: web
-    name: ainexus-engine
-    env: docker
-    docker:
-      dockerfile: Dockerfile
-      dockerContext: .
+    name: ainexus-arbitrage-engine
+    env: python
+    buildCommand: |
+      pip install -r requirements.txt
+      cd dashboard && npm install && npm run build
+    startCommand: python src/main.py
     envVars:
-      - key: ENVIRONMENT
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENVIRONMENT  
         value: production
       - key: DAILY_PROFIT_TARGET
         value: "250000"
-      - key: CAPACITY
-        value: "100000000"
-      - key: LOG_LEVEL
-        value: INFO
-    healthCheckPath: /health
+      - key: ETH_MAINNET_RPC
+        value: https://mainnet.infura.io/v3/your-infura-key
+      - key: POLYGON_RPC
+        value: https://polygon-rpc.com
+    healthCheckPath: /api/health
     autoDeploy: true
-    disk:
-      name: data
-      mountPath: /app/data
-      sizeGB: 10

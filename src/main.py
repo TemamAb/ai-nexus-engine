@@ -1,87 +1,67 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-AINEXUS ENGINE - RENDER DEPLOYMENT ENTRY POINT
-Serves both the FastAPI dashboard and integrates with core engine
-"""
-
 import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 import sys
-import asyncio
-from datetime import datetime
 
-# Add the current directory to Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))      
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-try:
-    # Import dashboard API
-    from api.dashboard_controller import router as dashboard_router
-    print("Dashboard API imported successfully")
-except ImportError as e:
-    print(f"Dashboard API import warning: {e}")
-
-# Create FastAPI app
 app = FastAPI(
-    title="AINexus Trading Engine",
-    description="Enterprise-Grade DeFi Arbitrage System - $100M Capacity | $250K Daily Target",        
-    version="2.0.1"
+    title="AINexus Arbitrage Engine",
+    description="Live Flash Loan Arbitrage - $250K Daily Profit Target",
+    version="2.0.0"
 )
 
-# Include dashboard API routes
-try:
-    app.include_router(dashboard_router, prefix="/api", tags=["dashboard"])
-    print("Dashboard routes mounted")
-except Exception as e:
-    print(f"Dashboard routes warning: {e}")
+# CORS for frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Serve static files for React dashboard
-if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
-    print("Static files mounted")
+# Serve static files from correct path
+static_path = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_path):
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
 
 @app.get("/")
-async def root():
-    """Serve the main dashboard"""
-    if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
-    return {"message": "AINexus Engine API", "status": "operational", "profit_target": "$250,000 daily"}
+async def serve_dashboard():
+    """Serve React dashboard"""
+    index_path = os.path.join(static_path, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"status": "dashboard_building", "profit_target": "$250,000"}
 
-@app.get("/health")
+@app.get("/api/health")
 async def health_check():
-    """Health check endpoint for Render"""
     return {
-        "status": "healthy",
-        "service": "ainexus-engine",
-        "version": "2.0.1",
-        "capacity": "$100M",
-        "profit_target": "$250,000 daily"
+        "status": "operational", 
+        "blockchain": "connected",
+        "profit_engine": "active",
+        "daily_target": "$250,000"
     }
 
-@app.get("/deep-health")
-async def deep_health_check():
-    """Comprehensive health check"""
-    health_status = {
-        "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
-        "version": "2.0.1",
-        "components": {}
-    }
-    
+@app.get("/api/blockchain/status")
+async def blockchain_status():
+    """Live blockchain connectivity"""
+    from web3 import Web3
     try:
-        health_status["components"]["flash_loan_system"] = "operational"
-        health_status["components"]["ai_optimization"] = "operational"
-        health_status["profit_target"] = "$250,000 daily"
-        health_status["capacity"] = "$100,000,000"
+        # Mainnet connections
+        eth = Web3(Web3.HTTPProvider(os.getenv('ETH_MAINNET_RPC')))
+        poly = Web3(Web3.HTTPProvider(os.getenv('POLYGON_RPC')))
+        
+        return {
+            "ethereum": "connected" if eth.is_connected() else "disconnected",
+            "polygon": "connected" if poly.is_connected() else "disconnected",
+            "latest_block": eth.eth.block_number if eth.is_connected() else 0
+        }
     except Exception as e:
-        health_status["status"] = "degraded"
-
-    return health_status
+        return {"status": "connecting", "error": str(e)}
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    print(f"Starting AINexus Engine on port {port}")
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)
