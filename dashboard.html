@@ -3,33 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AINEXUS - Industrial Scale Dashboard</title>
+    <title>AINEXUS - Industrial Dashboard</title>
     <style>
         :root {
-            --grafana-dark: #1e1e1e;
-            --grafana-panel: #2d2d2d;
-            --grafana-border: #404040;
-            --grafana-text: #d8d9da;
-            --grafana-green: #73bf69;
-            --grafana-blue: #5794f2;
-            --grafana-orange: #ff9830;
-            --grafana-red: #f2495c;
-            --grafana-purple: #b877d9;
-            --grafana-cyan: #00d0ff;
-            --wallet-ash: #e8e8e8;
-            --wallet-dark-ash: #d0d0d0;
+            --dark-1: #0a0a0a;
+            --dark-2: #1a1a1a;
+            --dark-3: #2a2a2a;
+            --dark-4: #3a3a3a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-green: #00ff88;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--grafana-dark);
-            color: var(--grafana-text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--dark-1);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
         }
@@ -37,267 +28,130 @@
         .container {
             max-width: 1800px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
         
-        .header {
-            background: var(--grafana-panel);
-            border: 1px solid var(--grafana-border);
-            border-radius: 8px;
+        /* MACRO CARDS - Equal Size */
+        .macro-card {
+            background: var(--dark-2);
+            border: 1px solid var(--dark-4);
+            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .header-content {
-            text-align: center;
-        }
-        
-        .header h1 {
-            color: var(--grafana-green);
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-        
-        .header-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             display: flex;
-            align-items: center;
-            gap: 15px;
+            flex-direction: column;
         }
         
-        /* Enhanced Time Selector */
-        .time-selector-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .time-select {
-            background: var(--grafana-dark);
-            border: 1px solid var(--grafana-border);
-            border-radius: 4px;
-            padding: 8px 12px;
-            color: var(--grafana-text);
-            font-size: 12px;
-            min-width: 120px;
-        }
-        
-        .grid-4col {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .grid-3col {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .grid-2col {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .card {
-            background: var(--grafana-panel);
-            border: 1px solid var(--grafana-border);
-            border-radius: 8px;
-            padding: 15px;
-        }
-        
-        .card-header {
+        .macro-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--grafana-border);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--dark-4);
         }
         
-        .card-title {
-            font-size: 14px;
+        .macro-title {
+            font-size: 16px;
             font-weight: 600;
-            color: var(--grafana-text);
+            color: var(--text-primary);
         }
         
-        .metric-grid {
+        /* MINI CARDS GRID - Equal distribution */
+        .mini-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+            flex: 1;
         }
         
-        .metric-card {
-            background: var(--grafana-dark);
-            border-radius: 6px;
-            padding: 12px;
-            border-left: 4px solid var(--grafana-blue);
+        .mini-card {
+            background: var(--dark-3);
+            border: 1px solid var(--dark-4);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
-        .metric-card.flash {
-            border-left-color: var(--grafana-purple);
-        }
-        
-        .metric-card.tier {
-            border-left-color: var(--grafana-cyan);
-        }
-        
-        .metric-card.wallet {
-            border-left-color: var(--wallet-ash);
-        }
-        
-        .metric-value {
+        .mini-value {
             font-size: 20px;
             font-weight: 700;
-            margin: 3px 0;
+            color: var(--accent-green);
+            margin: 5px 0;
         }
         
-        .metric-label {
+        .mini-label {
             font-size: 11px;
-            color: #8e8e8e;
+            color: var(--text-secondary);
             text-transform: uppercase;
             font-weight: 600;
         }
         
-        /* Profit Pulse - More Compact */
-        .profit-pulse {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--grafana-dark), var(--grafana-panel));
-            border-radius: 8px;
-            border: 1px solid var(--grafana-border);
-            margin-bottom: 15px;
+        .mini-change {
+            font-size: 10px;
+            margin-top: 3px;
         }
         
-        .pulse-value {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--grafana-green), var(--grafana-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 5px 0;
-        }
-        
-        .pulse-label {
-            font-size: 12px;
-            color: #8e8e8e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* Time Metrics - Dropdown Version */
-        .time-metrics-compact {
-            background: var(--grafana-dark);
-            border-radius: 6px;
-            padding: 15px;
-            margin: 10px 0;
-        }
-        
-        .time-display {
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-            margin: 10px 0;
-            color: var(--grafana-green);
-        }
-        
-        /* Wallet Section - Ash Theme */
-        .wallet-section {
-            background: linear-gradient(135deg, var(--wallet-ash), var(--wallet-dark-ash));
-            color: #333;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        .wallet-amount {
-            font-size: 24px;
-            font-weight: 800;
-            margin: 8px 0;
-            color: #333;
-        }
-        
-        .wallet-connect {
-            background: #333;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            margin: 10px 0;
-        }
-        
-        .account-selector {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin: 5px 0;
-            background: white;
-        }
-        
-        .withdrawal-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        /* DYNAMIC TIME SELECTION */
+        .time-controls {
+            display: flex;
             gap: 10px;
+            align-items: center;
+        }
+        
+        .time-select {
+            background: var(--dark-3);
+            border: 1px solid var(--dark-4);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+        
+        .refresh-btn {
+            background: var(--dark-3);
+            border: 1px solid var(--dark-4);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        /* PROFIT ANALYTICS - Dynamic Display */
+        .profit-display {
+            background: var(--dark-3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
             margin: 10px 0;
         }
         
-        .withdrawal-input {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background: white;
+        .profit-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 8px 0;
         }
         
-        .withdraw-btn {
-            background: var(--grafana-green);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            grid-column: 1 / -1;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-        
-        .status-active {
-            background: var(--grafana-green);
-        }
-        
-        .status-inactive {
-            background: var(--grafana-red);
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body class="currency-usd">
+<body>
     <div class="container">
-        <!-- COMPACT HEADER -->
-        <div class="header">
-            <div class="header-content">
-                <h1>Ìø≠ AINEXUS INDUSTRIAL SCALE DASHBOARD</h1>
-                <p style="font-size: 12px; color: #8e8e8e;">Real-time Arbitrage Engine Monitoring ‚Ä¢ Profit/Time Analytics</p>
-            </div>
-            <div class="header-controls">
-                <div class="time-selector-container">
-                    <span style="font-size: 11px; color: #8e8e8e;">Time View:</span>
-                    <select class="time-select" id="timeViewSelect">
+        
+        <!-- MACRO CARD 1: PROFIT ANALYTICS -->
+        <div class="macro-card">
+            <div class="macro-header">
+                <div class="macro-title">Ì≤∞ Profit Analytics</div>
+                <div class="time-controls">
+                    <select class="time-select" id="timeUnit">
                         <option value="second">Per Second</option>
                         <option value="minute">Per Minute</option>
                         <option value="hour">Per Hour</option>
@@ -306,398 +160,240 @@
                         <option value="month">Per Month</option>
                         <option value="year">Per Year</option>
                     </select>
+                    <button class="refresh-btn" onclick="refreshData()">Ì¥Ñ Refresh</button>
                 </div>
-                <div class="currency-toggle">
-                    <div class="currency-option active" onclick="switchCurrency('usd')">USD</div>
-                    <div class="currency-option" onclick="switchCurrency('eth')">ETH</div>
+            </div>
+            
+            <!-- Dynamic Profit Display -->
+            <div class="profit-display">
+                <div class="mini-label" id="profitLabel">PROFIT PER SECOND</div>
+                <div class="profit-value" id="profitValue">$0.79</div>
+                <div class="mini-change" id="profitChange">+0.8% vs previous</div>
+            </div>
+            
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-label">Total Accumulated</div>
+                    <div class="mini-value">$20.8M</div>
+                    <div class="mini-change">278 days operation</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Daily Average</div>
+                    <div class="mini-value">$2,847</div>
+                    <div class="mini-change">+2.4% today</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Success Rate</div>
+                    <div class="mini-value">94.7%</div>
+                    <div class="mini-change">+0.3% improvement</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Profit/Trade</div>
+                    <div class="mini-value">$127.50</div>
+                    <div class="mini-change">+1.2% efficiency</div>
                 </div>
             </div>
         </div>
 
-        <!-- COMPACT PROFIT PULSE -->
-        <div class="profit-pulse">
-            <div class="pulse-label">PROFIT PULSE ‚Ä¢ ACCUMULATED</div>
-            <div class="pulse-value">
-                <span class="usd-display">$20,847,392</span>
-                <span class="eth-display">8,338.96 ETH</span>
+        <!-- MACRO CARD 2: FLASH LOAN CAPACITY -->
+        <div class="macro-card">
+            <div class="macro-header">
+                <div class="macro-title">Ì≤∏ Flash Loan Metrics</div>
             </div>
-            <div style="font-size: 12px; color: var(--grafana-text);">
-                <strong>278 days</strong> continuous operation
-            </div>
-        </div>
-
-        <!-- MAIN GRID - 4 COLUMNS -->
-        <div class="grid-4col">
-            <!-- PROFIT METRICS CARD -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Ì≤∞ Profit Metrics</div>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-label">Total Capacity</div>
+                    <div class="mini-value">$100M</div>
+                    <div class="mini-change">8 providers</div>
                 </div>
-                <div class="metric-grid">
-                    <div class="metric-card profit">
-                        <div class="metric-label">Total Profit</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$124,568</span>
-                            <span class="eth-display">49.83 ETH</span>
-                        </div>
-                        <div class="metric-change positive">+2.4% today</div>
-                    </div>
-                    <div class="metric-card profit">
-                        <div class="metric-label">Daily Profit</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$2,847</span>
-                            <span class="eth-display">1.14 ETH</span>
-                        </div>
-                        <div class="metric-change positive">+0.8%</div>
-                    </div>
-                    <div class="metric-card profit">
-                        <div class="metric-label">Success Rate</div>
-                        <div class="metric-value">94.7%</div>
-                        <div class="metric-change positive">+0.3%</div>
-                    </div>
-                    <div class="metric-card profit">
-                        <div class="metric-label">Profit/Trade</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$127.50</span>
-                            <span class="eth-display">0.051 ETH</span>
-                        </div>
-                        <div class="metric-change positive">+1.2%</div>
-                    </div>
+                <div class="mini-card">
+                    <div class="mini-label">Utilized</div>
+                    <div class="mini-value">$47.8M</div>
+                    <div class="mini-change">47.8% active</div>
                 </div>
-                
-                <!-- TIME METRICS - DROPDOWN VERSION -->
-                <div class="time-metrics-compact">
-                    <div class="metric-label">PROFIT PER TIME UNIT</div>
-                    <div class="time-display" id="timeDisplay">
-                        <span class="usd-display">$0.79/sec</span>
-                        <span class="eth-display">0.000316 ETH/sec</span>
-                    </div>
-                    <div style="text-align: center; font-size: 11px; color: #8e8e8e;">
-                        Updated in real-time
-                    </div>
+                <div class="mini-card">
+                    <div class="mini-label">AAVE V3</div>
+                    <div class="mini-value">$18.2M</div>
+                    <div class="mini-change">Active</div>
                 </div>
-            </div>
-
-            <!-- FLASH LOAN METRICS -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Ì≤∏ Flash Loan Capacity</div>
-                </div>
-                <div class="metric-grid">
-                    <div class="metric-card flash">
-                        <div class="metric-label">Total Available</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$100M</span>
-                        </div>
-                        <div class="metric-label">Across 8 Providers</div>
-                    </div>
-                    <div class="metric-card flash">
-                        <div class="metric-label">Currently Utilized</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$47.8M</span>
-                        </div>
-                        <div class="metric-change positive">47.8% Utilization</div>
-                    </div>
-                    <div class="metric-card flash">
-                        <div class="metric-label">AAVE V3</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$18.2M</span>
-                        </div>
-                        <div class="metric-change">Active</div>
-                    </div>
-                    <div class="metric-card flash">
-                        <div class="metric-label">Compound</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$12.5M</span>
-                        </div>
-                        <div class="metric-change">Active</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- THREE TIER SYSTEM -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">ÌøóÔ∏è Three Tier System</div>
-                </div>
-                <div class="metric-grid">
-                    <div class="metric-card tier">
-                        <div class="metric-label">Scanners</div>
-                        <div class="metric-value">8/8</div>
-                        <div><span class="status-indicator status-active"></span> All Active</div>
-                    </div>
-                    <div class="metric-card tier">
-                        <div class="metric-label">Relayers</div>
-                        <div class="metric-value">6/6</div>
-                        <div><span class="status-indicator status-active"></span> All Active</div>
-                    </div>
-                    <div class="metric-card tier">
-                        <div class="metric-label">Orchestrators</div>
-                        <div class="metric-value">3/3</div>
-                        <div><span class="status-indicator status-active"></span> All Active</div>
-                    </div>
-                    <div class="metric-card tier">
-                        <div class="metric-label">Total Nodes</div>
-                        <div class="metric-value">17</div>
-                        <div><span class="status-indicator status-active"></span> Synchronized</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PERFORMANCE CARD -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">‚ö° Performance</div>
-                </div>
-                <div class="metric-grid">
-                    <div class="metric-card">
-                        <div class="metric-label">Trades Executed</div>
-                        <div class="metric-value">978</div>
-                        <div class="metric-change positive">+47 today</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Execution Speed</div>
-                        <div class="metric-value">0.8s</div>
-                        <div class="metric-change positive">-0.2s</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Opportunities</div>
-                        <div class="metric-value">12,457</div>
-                        <div class="metric-change positive">+1.2K</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">AI Cycles</div>
-                        <div class="metric-value">1,247</div>
-                        <div class="metric-change positive">+96 today</div>
-                    </div>
+                <div class="mini-card">
+                    <div class="mini-label">Compound</div>
+                    <div class="mini-value">$12.5M</div>
+                    <div class="mini-change">Active</div>
                 </div>
             </div>
         </div>
 
-        <!-- SECOND ROW - 3 COLUMNS -->
-        <div class="grid-3col">
-            <!-- AI OPTIMIZATION -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Ì¥ñ AI Optimization</div>
-                </div>
-                <div class="metric-grid">
-                    <div class="metric-card ai">
-                        <div class="metric-label">Active Strategies</div>
-                        <div class="metric-value">9</div>
-                        <div class="metric-change">Every 15min</div>
-                    </div>
-                    <div class="metric-card ai">
-                        <div class="metric-label">Performance Delta</div>
-                        <div class="metric-value">+27.4%</div>
-                        <div class="metric-change positive">+0.1% last cycle</div>
-                    </div>
-                    <div class="metric-card ai">
-                        <div class="metric-label">Learning Cycles</div>
-                        <div class="metric-value">1,247</div>
-                        <div class="metric-change positive">Continuous</div>
-                    </div>
-                    <div class="metric-card ai">
-                        <div class="metric-label">Strategy Evolution</div>
-                        <div class="metric-value">2,592+</div>
-                        <div class="metric-change positive">96x/day</div>
-                    </div>
-                </div>
+        <!-- MACRO CARD 3: THREE-TIER SYSTEM -->
+        <div class="macro-card">
+            <div class="macro-header">
+                <div class="macro-title">ÌøóÔ∏è Three-Tier Architecture</div>
             </div>
-
-            <!-- RISK MANAGEMENT -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">‚öñÔ∏è Risk Management</div>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-label">Scanners</div>
+                    <div class="mini-value">8/8</div>
+                    <div class="mini-change">All active</div>
                 </div>
-                <div class="metric-grid">
-                    <div class="metric-card risk">
-                        <div class="metric-label">Max Drawdown</div>
-                        <div class="metric-value">2.1%</div>
-                        <div class="metric-change positive">-0.3%</div>
-                    </div>
-                    <div class="metric-card risk">
-                        <div class="metric-label">Sharpe Ratio</div>
-                        <div class="metric-value">4.2</div>
-                        <div class="metric-change positive">+0.1</div>
-                    </div>
-                    <div class="metric-card risk">
-                        <div class="metric-label">Volatility</div>
-                        <div class="metric-value">8.7%</div>
-                        <div class="metric-change negative">+0.2%</div>
-                    </div>
-                    <div class="metric-card risk">
-                        <div class="metric-label">Risk Adjusted</div>
-                        <div class="metric-value">3.8</div>
-                        <div class="metric-change positive">+0.1</div>
-                    </div>
+                <div class="mini-card">
+                    <div class="mini-label">Relayers</div>
+                    <div class="mini-value">6/6</div>
+                    <div class="mini-change">All active</div>
                 </div>
-            </div>
-
-            <!-- PROFIT WITHDRAWAL SYSTEM -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">Ì±õ Profit Withdrawal</div>
+                <div class="mini-card">
+                    <div class="mini-label">Orchestrators</div>
+                    <div class="mini-value">3/3</div>
+                    <div class="mini-change">All active</div>
                 </div>
-                
-                <!-- Wallet Balance - Ash Theme -->
-                <div class="wallet-section">
-                    <div class="metric-label">TOTAL WALLET BALANCE</div>
-                    <div class="wallet-amount">
-                        <span class="usd-display">$189,425</span>
-                        <span class="eth-display">75.77 ETH</span>
-                    </div>
-                    
-                    <!-- Connect Wallet -->
-                    <button class="wallet-connect" onclick="connectWallet()">
-                        Ì¥ó Connect MetaMask
-                    </button>
-                    
-                    <!-- Account Selection -->
-                    <div id="accountSection" style="display: none;">
-                        <div class="metric-label">SELECT ACCOUNT</div>
-                        <select class="account-selector" id="accountSelect">
-                            <option value="">Loading accounts...</option>
-                        </select>
-                        
-                        <!-- Withdrawal Controls -->
-                        <div class="withdrawal-controls">
-                            <input type="number" class="withdrawal-input" id="withdrawalAmount" placeholder="Amount ($)">
-                            <input type="number" class="withdrawal-input" id="withdrawalThreshold" placeholder="Threshold ($)" value="1000">
-                            <select class="withdrawal-input" id="transferTime">
-                                <option value="instant">Instant</option>
-                                <option value="1h">1 Hour</option>
-                                <option value="6h">6 Hours</option>
-                                <option value="24h">24 Hours</option>
-                            </select>
-                            <select class="withdrawal-input" id="withdrawalMode">
-                                <option value="auto">Auto</option>
-                                <option value="manual">Manual</option>
-                            </select>
-                            <button class="withdraw-btn" onclick="initiateWithdrawal()">
-                                ÔøΩÔøΩ INITIATE WITHDRAWAL
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Wallet Breakdown -->
-                <div class="metric-grid" style="margin-top: 10px;">
-                    <div class="metric-card wallet">
-                        <div class="metric-label">Available</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$116,137</span>
-                            <span class="eth-display">46.45 ETH</span>
-                        </div>
-                        <div class="metric-change">Immediate Use</div>
-                    </div>
-                    <div class="metric-card wallet">
-                        <div class="metric-label">Staked</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$58,068</span>
-                            <span class="eth-display">23.23 ETH</span>
-                        </div>
-                        <div class="metric-change positive">+3.8% APY</div>
-                    </div>
+                <div class="mini-card">
+                    <div class="mini-label">Total Nodes</div>
+                    <div class="mini-value">17</div>
+                    <div class="mini-change">Synchronized</div>
                 </div>
             </div>
         </div>
+
+        <!-- MACRO CARD 4: PERFORMANCE METRICS -->
+        <div class="macro-card">
+            <div class="macro-header">
+                <div class="macro-title">‚ö° Performance Engine</div>
+            </div>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-label">Trades Executed</div>
+                    <div class="mini-value">978</div>
+                    <div class="mini-change">+47 today</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Execution Speed</div>
+                    <div class="mini-value">0.8s</div>
+                    <div class="mini-change">-0.2s faster</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Opportunities</div>
+                    <div class="mini-value">12,457</div>
+                    <div class="mini-change">+1.2K detected</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">AI Cycles</div>
+                    <div class="mini-value">1,247</div>
+                    <div class="mini-change">+96 today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MACRO CARD 5: AI OPTIMIZATION -->
+        <div class="macro-card">
+            <div class="macro-header">
+                <div class="macro-title">Ì¥ñ AI Optimization</div>
+            </div>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-label">Active Strategies</div>
+                    <div class="mini-value">9</div>
+                    <div class="mini-change">Every 15min</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Performance Delta</div>
+                    <div class="mini-value">+27.4%</div>
+                    <div class="mini-change">+0.1% gain</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Learning Cycles</div>
+                    <div class="mini-value">1,247</div>
+                    <div class="mini-change">Continuous</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Strategy Evolution</div>
+                    <div class="mini-value">2,592+</div>
+                    <div class="mini-change">96x/day</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MACRO CARD 6: RISK MANAGEMENT -->
+        <div class="macro-card">
+            <div class="macro-header">
+                <div class="macro-title">‚öñÔ∏è Risk Management</div>
+            </div>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-label">Max Drawdown</div>
+                    <div class="mini-value">2.1%</div>
+                    <div class="mini-change">-0.3% improved</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Sharpe Ratio</div>
+                    <div class="mini-value">4.2</div>
+                    <div class="mini-change">+0.1 better</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Volatility</div>
+                    <div class="mini-value">8.7%</div>
+                    <div class="mini-change">+0.2% increase</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-label">Risk Adjusted</div>
+                    <div class="mini-value">3.8</div>
+                    <div class="mini-change">+0.1 improved</div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // Time-based profit data
-        const timeProfitData = {
-            second: { usd: "0.79", eth: "0.000316", label: "sec" },
-            minute: { usd: "47.40", eth: "0.01896", label: "min" },
-            hour: { usd: "2,844", eth: "1.1376", label: "hour" },
-            day: { usd: "68,256", eth: "27.3024", label: "day" },
-            week: { usd: "477,792", eth: "191.1168", label: "week" },
-            month: { usd: "2,047,680", eth: "819.072", label: "month" },
-            year: { usd: "24,572,160", eth: "9,828.864", label: "year" }
+        // DYNAMIC PROFIT DATA - Seconds to Years
+        const profitData = {
+            second: { value: "0.79", change: "+0.8%", label: "PROFIT PER SECOND" },
+            minute: { value: "47.40", change: "+1.2%", label: "PROFIT PER MINUTE" },
+            hour: { value: "2,844", change: "+2.4%", label: "PROFIT PER HOUR" },
+            day: { value: "68,256", change: "+3.1%", label: "PROFIT PER DAY" },
+            week: { value: "477,792", change: "+5.2%", label: "PROFIT PER WEEK" },
+            month: { value: "2.04M", change: "+8.7%", label: "PROFIT PER MONTH" },
+            year: { value: "24.57M", change: "+27.4%", label: "PROFIT PER YEAR" }
         };
 
-        // Initialize Dashboard
-        function initializeDashboard() {
-            setupEventListeners();
-            updateTimeDisplay();
-        }
-
-        function setupEventListeners() {
-            // Time view selector
-            document.getElementById('timeViewSelect').addEventListener('change', updateTimeDisplay);
-        }
-
-        function updateTimeDisplay() {
-            const timeView = document.getElementById('timeViewSelect').value;
-            const data = timeProfitData[timeView];
+        // REAL-TIME DATA REFRESH SYSTEM
+        function refreshData() {
+            const timeUnit = document.getElementById('timeUnit').value;
+            const data = profitData[timeUnit];
             
-            document.getElementById('timeDisplay').innerHTML = `
-                <span class="usd-display">$${data.usd}/${data.label}</span>
-                <span class="eth-display">${data.eth} ETH/${data.label}</span>
-            `;
+            // Update dynamic display
+            document.getElementById('profitLabel').textContent = data.label;
+            document.getElementById('profitValue').textContent = `$${data.value}`;
+            document.getElementById('profitChange').textContent = data.change;
+            
+            // Simulate live data updates
+            updateMiniCards();
+            
+            console.log('Ì¥Ñ Data refreshed for:', timeUnit);
         }
 
-        // Wallet Connection System
-        async function connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ 
-                        method: 'eth_requestAccounts' 
-                    });
-                    
-                    const accountSelect = document.getElementById('accountSelect');
-                    accountSelect.innerHTML = '';
-                    
-                    accounts.forEach(account => {
-                        const option = document.createElement('option');
-                        option.value = account;
-                        option.textContent = `${account.substring(0, 6)}...${account.substring(38)}`;
-                        accountSelect.appendChild(option);
-                    });
-                    
-                    document.getElementById('accountSection').style.display = 'block';
-                    document.querySelector('.wallet-connect').textContent = '‚úÖ Wallet Connected';
-                    
-                } catch (error) {
-                    alert('Error connecting wallet: ' + error.message);
+        function updateMiniCards() {
+            // Add small random fluctuations to mini cards
+            document.querySelectorAll('.mini-value').forEach(card => {
+                if (card.textContent.includes('$') && !card.textContent.includes('M')) {
+                    const current = parseFloat(card.textContent.replace(/[$,]/g, ''));
+                    if (!isNaN(current) && current > 10) {
+                        const change = (Math.random() - 0.5) * 0.02;
+                        const newValue = current * (1 + change);
+                        card.textContent = '$' + Math.round(newValue).toLocaleString();
+                    }
                 }
-            } else {
-                alert('MetaMask not detected! Please install MetaMask.');
-            }
-        }
-
-        function initiateWithdrawal() {
-            const amount = document.getElementById('withdrawalAmount').value;
-            const threshold = document.getElementById('withdrawalThreshold').value;
-            const time = document.getElementById('transferTime').value;
-            const mode = document.getElementById('withdrawalMode').value;
-            const account = document.getElementById('accountSelect').value;
-            
-            if (!amount || !account) {
-                alert('Please enter amount and select account');
-                return;
-            }
-            
-            alert(`Withdrawal initiated!\nAmount: $${amount}\nThreshold: $${threshold}\nTime: ${time}\nMode: ${mode}\nAccount: ${account.substring(0, 6)}...`);
-            
-            // Simulate withdrawal processing
-            document.querySelector('.withdraw-btn').textContent = '‚è≥ Processing...';
-            setTimeout(() => {
-                document.querySelector('.withdraw-btn').textContent = '‚úÖ Withdrawal Complete';
-            }, 2000);
-        }
-
-        function switchCurrency(currency) {
-            currentCurrency = currency;
-            document.body.className = 'currency-' + currency;
-            document.querySelectorAll('.currency-option').forEach(option => {
-                option.classList.remove('active');
             });
-            event.target.classList.add('active');
         }
 
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initializeDashboard);
+        // Initialize with default time unit
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshData();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(refreshData, 30000);
+        });
+
+        // Time unit change listener
+        document.getElementById('timeUnit').addEventListener('change', refreshData);
     </script>
 </body>
 </html>
