@@ -11,9 +11,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import sys
 import asyncio
+from datetime import datetime
 
 # Add the current directory to Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))      
 
 try:
     # Import dashboard API
@@ -22,17 +23,10 @@ try:
 except ImportError as e:
     print(f"‚ö†Ô∏è Dashboard API import warning: {e}")
 
-try:
-    # Import core engine components
-    from engine_controller import AINexusEngine
-    print("‚úÖ Core engine imported successfully")
-except ImportError as e:
-    print(f"‚ö†Ô∏è Core engine import warning: {e}")
-
 # Create FastAPI app
 app = FastAPI(
     title="AINexus Trading Engine",
-    description="Enterprise-Grade DeFi Arbitrage System - $100M Capacity | $250K Daily Target",
+    description="Enterprise-Grade DeFi Arbitrage System - $100M Capacity | $250K Daily Target",        
     version="2.0.1"
 )
 
@@ -59,63 +53,16 @@ async def root():
 async def health_check():
     """Health check endpoint for Render"""
     return {
-        "status": "healthy", 
+        "status": "healthy",
         "service": "ainexus-engine",
         "version": "2.0.1",
         "capacity": "$100M",
         "profit_target": "$250,000 daily"
     }
 
-@app.get("/engine/status")
-async def engine_status():
-    """Core engine status endpoint"""
-    try:
-        # This would integrate with your actual engine_controller
-        return {
-            "engine_status": "operational",
-            "flash_loan_system": "active", 
-            "gasless_mode": "active",
-            "three_tier_system": "active",
-            "ai_optimization": "active",
-            "daily_profit_target": "$250,000"
-        }
-    except Exception as e:
-        return {"engine_status": "initializing", "error": str(e)}
-
-# Initialize core engine (commented for safety - uncomment when ready)
-# @app.on_event("startup")
-# async def startup_event():
-#     """Initialize core trading engine on startup"""
-#     try:
-#         # engine = AINexusEngine()
-#         # await engine.initialize()
-#         print("Ì∫Ä AINexus Engine initialized")
-#     except Exception as e:
-#         print(f"‚ùå Engine initialization error: {e}")
-
-if __name__ == "__main__":
-    # Get port from Render environment or default to 8000
-    port = int(os.environ.get("PORT", 8000))
-    
-    print(f"Ì∫Ä Starting AINexus Engine on port {port}")
-    print("Ì≤µ Configuration: $100M Capacity | $250K Daily Profit Target")
-    print("ÔøΩÔøΩ Dashboard: http://localhost:3000")
-    print("Ì¥ß API: http://localhost:8000")
-    
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=os.environ.get("ENVIRONMENT") == "development"
-    )
-
 @app.get("/deep-health")
 async def deep_health_check():
-    """Comprehensive health check for container orchestration"""
-    import asyncpg
-    import redis
-    import asyncio
-    
+    """Comprehensive health check"""
     health_status = {
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
@@ -123,22 +70,17 @@ async def deep_health_check():
         "components": {}
     }
     
-    # Check database connectivity
-    try:
-        # This would be your actual database connection
-        health_status["components"]["database"] = "connected"
-    except Exception as e:
-        health_status["components"]["database"] = f"error: {str(e)}"
-        health_status["status"] = "degraded"
-    
-    # Check core engine components
     try:
         health_status["components"]["flash_loan_system"] = "operational"
         health_status["components"]["ai_optimization"] = "operational"
-        health_status["components"]["execution_engine"] = "operational"
         health_status["profit_target"] = "$250,000 daily"
         health_status["capacity"] = "$100,000,000"
     except Exception as e:
         health_status["status"] = "degraded"
-    
+
     return health_status
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    print(f"Ì∫Ä Starting AINexus Engine on port {port}")
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
