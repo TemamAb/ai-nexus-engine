@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: ainexus-industrial-engine
-    env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn src.main:app
+    name: aineon-dashboard
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: NODE_VERSION
+        value: 18.17.0
+    staticPublishPath: ./dist
