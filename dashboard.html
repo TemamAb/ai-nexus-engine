@@ -16,6 +16,8 @@
             --grafana-red: #f2495c;
             --grafana-purple: #b877d9;
             --grafana-cyan: #00d0ff;
+            --wallet-ash: #e8e8e8;
+            --wallet-dark-ash: #d0d0d0;
         }
         
         * {
@@ -33,7 +35,7 @@
         }
         
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
         }
         
@@ -41,8 +43,8 @@
             background: var(--grafana-panel);
             border: 1px solid var(--grafana-border);
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
             position: relative;
         }
         
@@ -52,8 +54,8 @@
         
         .header h1 {
             color: var(--grafana-green);
-            font-size: 32px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 5px;
         }
         
         .header-controls {
@@ -65,48 +67,21 @@
             gap: 15px;
         }
         
-        .refresh-control {
+        /* Enhanced Time Selector */
+        .time-selector-container {
             display: flex;
             align-items: center;
             gap: 10px;
         }
         
-        .currency-toggle {
-            display: flex;
-            background: var(--grafana-dark);
-            border-radius: 4px;
-            padding: 2px;
-            border: 1px solid var(--grafana-border);
-        }
-        
-        .currency-option {
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: all 0.2s ease;
-        }
-        
-        .currency-option.active {
-            background: var(--grafana-blue);
-            color: white;
-        }
-        
-        .refresh-select {
+        .time-select {
             background: var(--grafana-dark);
             border: 1px solid var(--grafana-border);
             border-radius: 4px;
-            padding: 6px 12px;
+            padding: 8px 12px;
             color: var(--grafana-text);
             font-size: 12px;
-        }
-        
-        .grid-3col {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
+            min-width: 120px;
         }
         
         .grid-4col {
@@ -116,10 +91,17 @@
             margin-bottom: 20px;
         }
         
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
         .grid-2col {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 20px;
         }
         
@@ -127,91 +109,164 @@
             background: var(--grafana-panel);
             border: 1px solid var(--grafana-border);
             border-radius: 8px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            border-color: var(--grafana-blue);
-            transform: translateY(-2px);
+            padding: 15px;
         }
         
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--grafana-border);
         }
         
         .card-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--grafana-text);
-        }
-        
-        .card-icon {
-            font-size: 20px;
         }
         
         .metric-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
         
         .metric-card {
             background: var(--grafana-dark);
             border-radius: 6px;
-            padding: 15px;
+            padding: 12px;
             border-left: 4px solid var(--grafana-blue);
         }
         
-        .metric-card.profit {
-            border-left-color: var(--grafana-green);
-        }
-        
-        .metric-card.risk {
-            border-left-color: var(--grafana-orange);
-        }
-        
-        .metric-card.warning {
-            border-left-color: var(--grafana-red);
-        }
-        
-        .metric-card.ai {
+        .metric-card.flash {
             border-left-color: var(--grafana-purple);
         }
         
-        .metric-card.wallet {
+        .metric-card.tier {
             border-left-color: var(--grafana-cyan);
         }
         
+        .metric-card.wallet {
+            border-left-color: var(--wallet-ash);
+        }
+        
         .metric-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
-            margin: 5px 0;
+            margin: 3px 0;
         }
         
         .metric-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #8e8e8e;
             text-transform: uppercase;
             font-weight: 600;
         }
         
-        .metric-change {
-            font-size: 12px;
-            margin-top: 5px;
+        /* Profit Pulse - More Compact */
+        .profit-pulse {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--grafana-dark), var(--grafana-panel));
+            border-radius: 8px;
+            border: 1px solid var(--grafana-border);
+            margin-bottom: 15px;
         }
         
-        .positive {
+        .pulse-value {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--grafana-green), var(--grafana-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 5px 0;
+        }
+        
+        .pulse-label {
+            font-size: 12px;
+            color: #8e8e8e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Time Metrics - Dropdown Version */
+        .time-metrics-compact {
+            background: var(--grafana-dark);
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .time-display {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
             color: var(--grafana-green);
         }
         
-        .negative {
-            color: var(--grafana-red);
+        /* Wallet Section - Ash Theme */
+        .wallet-section {
+            background: linear-gradient(135deg, var(--wallet-ash), var(--wallet-dark-ash));
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .wallet-amount {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 8px 0;
+            color: #333;
+        }
+        
+        .wallet-connect {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .account-selector {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 5px 0;
+            background: white;
+        }
+        
+        .withdrawal-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .withdrawal-input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .withdraw-btn {
+            background: var(--grafana-green);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            grid-column: 1 / -1;
         }
         
         .status-indicator {
@@ -219,194 +274,37 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            margin-right: 8px;
+            margin-right: 6px;
         }
         
         .status-active {
             background: var(--grafana-green);
         }
         
-        .status-warning {
-            background: var(--grafana-orange);
-        }
-        
-        .status-critical {
+        .status-inactive {
             background: var(--grafana-red);
-        }
-        
-        /* Profit Pulse Styles */
-        .profit-pulse {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--grafana-dark), var(--grafana-panel));
-            border-radius: 8px;
-            border: 1px solid var(--grafana-border);
-            margin-bottom: 20px;
-        }
-        
-        .pulse-value {
-            font-size: 42px;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--grafana-green), var(--grafana-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 10px 0;
-        }
-        
-        .pulse-label {
-            font-size: 14px;
-            color: #8e8e8e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* Time-Based Profit Metrics */
-        .time-metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .time-metric {
-            background: var(--grafana-dark);
-            border-radius: 6px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--grafana-border);
-            transition: all 0.3s ease;
-        }
-        
-        .time-metric:hover {
-            border-color: var(--grafana-green);
-            transform: translateY(-2px);
-        }
-        
-        .time-value {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 8px 0;
-        }
-        
-        .time-label {
-            font-size: 11px;
-            color: #8e8e8e;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        
-        .time-period {
-            font-size: 10px;
-            color: var(--grafana-green);
-            margin-top: 5px;
-        }
-        
-        /* Slider Styles */
-        .slider-container {
-            margin: 15px 0;
-        }
-        
-        .slider {
-            width: 100%;
-            height: 6px;
-            background: var(--grafana-border);
-            border-radius: 3px;
-            outline: none;
-            cursor: pointer;
-        }
-        
-        .slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--grafana-purple);
-            cursor: pointer;
-        }
-        
-        .slider-value {
-            text-align: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--grafana-purple);
-            margin-top: 10px;
-        }
-        
-        /* Smart Wallet Balance */
-        .wallet-balance {
-            background: linear-gradient(135deg, var(--grafana-cyan), var(--grafana-blue));
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .wallet-amount {
-            font-size: 28px;
-            font-weight: 800;
-            margin: 10px 0;
-        }
-        
-        .currency-usd .eth-display {
-            display: none !important;
-        }
-        
-        .currency-eth .usd-display {
-            display: none !important;
-        }
-        
-        .usd-display, .eth-display {
-            display: block;
-        }
-        
-        /* Time Navigation */
-        .time-navigation {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .time-btn {
-            padding: 8px 16px;
-            background: var(--grafana-dark);
-            border: 1px solid var(--grafana-border);
-            border-radius: 4px;
-            color: var(--grafana-text);
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-        
-        .time-btn.active {
-            background: var(--grafana-blue);
-            color: white;
-            border-color: var(--grafana-blue);
-        }
-        
-        .time-btn:hover {
-            border-color: var(--grafana-green);
         }
     </style>
 </head>
 <body class="currency-usd">
     <div class="container">
-        <!-- HEADER WITH CONTROLS -->
+        <!-- COMPACT HEADER -->
         <div class="header">
             <div class="header-content">
                 <h1>Ìø≠ AINEXUS INDUSTRIAL SCALE DASHBOARD</h1>
-                <p>Real-time Arbitrage Engine Monitoring ‚Ä¢ Profit/Time Analytics</p>
+                <p style="font-size: 12px; color: #8e8e8e;">Real-time Arbitrage Engine Monitoring ‚Ä¢ Profit/Time Analytics</p>
             </div>
             <div class="header-controls">
-                <div class="refresh-control">
-                    <span style="font-size: 12px; color: #8e8e8e;">Refresh:</span>
-                    <select class="refresh-select" id="refreshInterval">
-                        <option value="1000">1 sec</option>
-                        <option value="2000">2 sec</option>
-                        <option value="5000">5 sec</option>
-                        <option value="10000" selected>10 sec</option>
+                <div class="time-selector-container">
+                    <span style="font-size: 11px; color: #8e8e8e;">Time View:</span>
+                    <select class="time-select" id="timeViewSelect">
+                        <option value="second">Per Second</option>
+                        <option value="minute">Per Minute</option>
+                        <option value="hour">Per Hour</option>
+                        <option value="day">Per Day</option>
+                        <option value="week">Per Week</option>
+                        <option value="month">Per Month</option>
+                        <option value="year">Per Year</option>
                     </select>
                 </div>
                 <div class="currency-toggle">
@@ -416,46 +314,24 @@
             </div>
         </div>
 
-        <!-- PROFIT PULSE -->
+        <!-- COMPACT PROFIT PULSE -->
         <div class="profit-pulse">
-            <div class="pulse-label">PROFIT PULSE ‚Ä¢ ACCUMULATED SINCE DEPLOYMENT</div>
+            <div class="pulse-label">PROFIT PULSE ‚Ä¢ ACCUMULATED</div>
             <div class="pulse-value">
                 <span class="usd-display">$20,847,392</span>
                 <span class="eth-display">8,338.96 ETH</span>
             </div>
-            <div style="font-size: 16px; color: var(--grafana-text);">
-                Generated over <strong>278 days</strong> of continuous operation
+            <div style="font-size: 12px; color: var(--grafana-text);">
+                <strong>278 days</strong> continuous operation
             </div>
         </div>
 
-        <!-- TIME-BASED PROFIT METRICS -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">‚è∞ Profit/Time Analytics</div>
-                <div class="card-icon">Ì≥à</div>
-            </div>
-            
-            <div class="time-navigation">
-                <button class="time-btn active" onclick="setTimeView('realtime')">Real-time</button>
-                <button class="time-btn" onclick="setTimeView('hourly')">Hourly</button>
-                <button class="time-btn" onclick="setTimeView('daily')">Daily</button>
-                <button class="time-btn" onclick="setTimeView('weekly')">Weekly</button>
-                <button class="time-btn" onclick="setTimeView('monthly')">Monthly</button>
-                <button class="time-btn" onclick="setTimeView('yearly')">Yearly</button>
-            </div>
-            
-            <div class="time-metrics-grid" id="timeMetrics">
-                <!-- Real-time metrics will be populated here -->
-            </div>
-        </div>
-
-        <!-- MAIN DASHBOARD GRID -->
-        <div class="grid-3col">
+        <!-- MAIN GRID - 4 COLUMNS -->
+        <div class="grid-4col">
             <!-- PROFIT METRICS CARD -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Ì≤∞ Profit Metrics</div>
-                    <div class="card-icon">Ì≥ä</div>
                 </div>
                 <div class="metric-grid">
                     <div class="metric-card profit">
@@ -488,13 +364,90 @@
                         <div class="metric-change positive">+1.2%</div>
                     </div>
                 </div>
+                
+                <!-- TIME METRICS - DROPDOWN VERSION -->
+                <div class="time-metrics-compact">
+                    <div class="metric-label">PROFIT PER TIME UNIT</div>
+                    <div class="time-display" id="timeDisplay">
+                        <span class="usd-display">$0.79/sec</span>
+                        <span class="eth-display">0.000316 ETH/sec</span>
+                    </div>
+                    <div style="text-align: center; font-size: 11px; color: #8e8e8e;">
+                        Updated in real-time
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLASH LOAN METRICS -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Ì≤∏ Flash Loan Capacity</div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-card flash">
+                        <div class="metric-label">Total Available</div>
+                        <div class="metric-value">
+                            <span class="usd-display">$100M</span>
+                        </div>
+                        <div class="metric-label">Across 8 Providers</div>
+                    </div>
+                    <div class="metric-card flash">
+                        <div class="metric-label">Currently Utilized</div>
+                        <div class="metric-value">
+                            <span class="usd-display">$47.8M</span>
+                        </div>
+                        <div class="metric-change positive">47.8% Utilization</div>
+                    </div>
+                    <div class="metric-card flash">
+                        <div class="metric-label">AAVE V3</div>
+                        <div class="metric-value">
+                            <span class="usd-display">$18.2M</span>
+                        </div>
+                        <div class="metric-change">Active</div>
+                    </div>
+                    <div class="metric-card flash">
+                        <div class="metric-label">Compound</div>
+                        <div class="metric-value">
+                            <span class="usd-display">$12.5M</span>
+                        </div>
+                        <div class="metric-change">Active</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THREE TIER SYSTEM -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">ÌøóÔ∏è Three Tier System</div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-card tier">
+                        <div class="metric-label">Scanners</div>
+                        <div class="metric-value">8/8</div>
+                        <div><span class="status-indicator status-active"></span> All Active</div>
+                    </div>
+                    <div class="metric-card tier">
+                        <div class="metric-label">Relayers</div>
+                        <div class="metric-value">6/6</div>
+                        <div><span class="status-indicator status-active"></span> All Active</div>
+                    </div>
+                    <div class="metric-card tier">
+                        <div class="metric-label">Orchestrators</div>
+                        <div class="metric-value">3/3</div>
+                        <div><span class="status-indicator status-active"></span> All Active</div>
+                    </div>
+                    <div class="metric-card tier">
+                        <div class="metric-label">Total Nodes</div>
+                        <div class="metric-value">17</div>
+                        <div><span class="status-indicator status-active"></span> Synchronized</div>
+                    </div>
+                </div>
             </div>
 
             <!-- PERFORMANCE CARD -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">‚ö° Performance</div>
-                    <div class="card-icon">Ì∫Ä</div>
                 </div>
                 <div class="metric-grid">
                     <div class="metric-card">
@@ -519,12 +472,14 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- AI OPTIMIZATION CARD -->
+        <!-- SECOND ROW - 3 COLUMNS -->
+        <div class="grid-3col">
+            <!-- AI OPTIMIZATION -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Ì¥ñ AI Optimization</div>
-                    <div class="card-icon">Ì∑†</div>
                 </div>
                 <div class="metric-grid">
                     <div class="metric-card ai">
@@ -548,29 +503,12 @@
                         <div class="metric-change positive">96x/day</div>
                     </div>
                 </div>
-                
-                <!-- Profit Reinvestment Slider -->
-                <div class="slider-container">
-                    <div style="text-align: center; margin-bottom: 10px;">
-                        <div class="metric-label">PROFIT REINVESTMENT RATE</div>
-                        <div class="slider-value" id="reinvestmentValue">65%</div>
-                    </div>
-                    <input type="range" class="slider" id="reinvestmentSlider" min="1" max="100" value="65" step="1">
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8e8e8e; margin-top: 5px;">
-                        <span>1%</span>
-                        <span>100%</span>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <!-- RISK & WALLET SECTION -->
-        <div class="grid-2col">
-            <!-- RISK MANAGEMENT CARD -->
+            <!-- RISK MANAGEMENT -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">‚öñÔ∏è Risk Management</div>
-                    <div class="card-icon">Ìª°Ô∏è</div>
                 </div>
                 <div class="metric-grid">
                     <div class="metric-card risk">
@@ -596,23 +534,55 @@
                 </div>
             </div>
 
-            <!-- SMART WALLET CARD -->
+            <!-- PROFIT WITHDRAWAL SYSTEM -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Ì±õ Smart Wallet</div>
-                    <div class="card-icon">Ì≤é</div>
+                    <div class="card-title">Ì±õ Profit Withdrawal</div>
                 </div>
-                <div class="wallet-balance">
+                
+                <!-- Wallet Balance - Ash Theme -->
+                <div class="wallet-section">
                     <div class="metric-label">TOTAL WALLET BALANCE</div>
                     <div class="wallet-amount">
                         <span class="usd-display">$189,425</span>
                         <span class="eth-display">75.77 ETH</span>
                     </div>
-                    <div style="font-size: 14px; opacity: 0.9;">
-                        Multi-sig Protected ‚Ä¢ Institutional Grade
+                    
+                    <!-- Connect Wallet -->
+                    <button class="wallet-connect" onclick="connectWallet()">
+                        Ì¥ó Connect MetaMask
+                    </button>
+                    
+                    <!-- Account Selection -->
+                    <div id="accountSection" style="display: none;">
+                        <div class="metric-label">SELECT ACCOUNT</div>
+                        <select class="account-selector" id="accountSelect">
+                            <option value="">Loading accounts...</option>
+                        </select>
+                        
+                        <!-- Withdrawal Controls -->
+                        <div class="withdrawal-controls">
+                            <input type="number" class="withdrawal-input" id="withdrawalAmount" placeholder="Amount ($)">
+                            <input type="number" class="withdrawal-input" id="withdrawalThreshold" placeholder="Threshold ($)" value="1000">
+                            <select class="withdrawal-input" id="transferTime">
+                                <option value="instant">Instant</option>
+                                <option value="1h">1 Hour</option>
+                                <option value="6h">6 Hours</option>
+                                <option value="24h">24 Hours</option>
+                            </select>
+                            <select class="withdrawal-input" id="withdrawalMode">
+                                <option value="auto">Auto</option>
+                                <option value="manual">Manual</option>
+                            </select>
+                            <button class="withdraw-btn" onclick="initiateWithdrawal()">
+                                ÔøΩÔøΩ INITIATE WITHDRAWAL
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="metric-grid" style="margin-top: 15px;">
+                
+                <!-- Wallet Breakdown -->
+                <div class="metric-grid" style="margin-top: 10px;">
                     <div class="metric-card wallet">
                         <div class="metric-label">Available</div>
                         <div class="metric-value">
@@ -629,127 +599,94 @@
                         </div>
                         <div class="metric-change positive">+3.8% APY</div>
                     </div>
-                    <div class="metric-card wallet">
-                        <div class="metric-label">LP Positions</div>
-                        <div class="metric-value">
-                            <span class="usd-display">$15,220</span>
-                            <span class="eth-display">6.09 ETH</span>
-                        </div>
-                        <div class="metric-change positive">+12.4%</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SYSTEM STATUS -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Ì∂•Ô∏è System Status</div>
-                <div class="card-icon">Ì¥ß</div>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
-                <div>
-                    <div class="metric-label">API Server</div>
-                    <div><span class="status-indicator status-active"></span> Operational</div>
-                </div>
-                <div>
-                    <div class="metric-label">AI Engine</div>
-                    <div><span class="status-indicator status-active"></span> Optimizing</div>
-                </div>
-                <div>
-                    <div class="metric-label">Blockchain</div>
-                    <div><span class="status-indicator status-active"></span> Connected</div>
-                </div>
-                <div>
-                    <div class="metric-label">Risk Manager</div>
-                    <div><span class="status-indicator status-active"></span> Active</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Dashboard State
-        let currentCurrency = 'usd';
-        let currentTimeView = 'realtime';
-        let refreshInterval = 10000;
-        let ethToUsdRate = 2500; // Current ETH/USD rate
-        
         // Time-based profit data
         const timeProfitData = {
-            realtime: [
-                { label: "Per Second", usd: "0.79", eth: "0.000316", period: "sec" },
-                { label: "Per Minute", usd: "47.40", eth: "0.01896", period: "min" },
-                { label: "Per Hour", usd: "2,844", eth: "1.1376", period: "hour" },
-                { label: "Per Day", usd: "68,256", eth: "27.3024", period: "day" },
-                { label: "Per Week", usd: "477,792", eth: "191.1168", period: "week" },
-                { label: "Per Month", usd: "2,047,680", eth: "819.072", period: "month" }
-            ],
-            hourly: [
-                { label: "Last Hour", usd: "118.50", eth: "0.0474", period: "current" },
-                { label: "Avg/Hour", usd: "94.80", eth: "0.03792", period: "average" },
-                { label: "Peak/Hour", usd: "247.30", eth: "0.09892", period: "peak" },
-                { label: "24h Total", usd: "2,275", eth: "0.91", period: "total" },
-                { label: "Trend", usd: "+12.4%", eth: "+12.4%", period: "trend" },
-                { label: "Efficiency", usd: "94.7%", eth: "94.7%", period: "rate" }
-            ],
-            daily: [
-                { label: "Today", usd: "2,847", eth: "1.1388", period: "current" },
-                { label: "Yesterday", usd: "2,534", eth: "1.0136", period: "previous" },
-                { label: "Avg/Day", usd: "2,245", eth: "0.898", period: "average" },
-                { label: "Best Day", usd: "4,872", eth: "1.9488", period: "peak" },
-                { label: "30d Total", usd: "67,350", eth: "26.94", period: "total" },
-                { label: "Trend", usd: "+8.3%", eth: "+8.3%", period: "trend" }
-            ],
-            weekly: [
-                { label: "This Week", usd: "19,929", eth: "7.9716", period: "current" },
-                { label: "Last Week", usd: "18,452", eth: "7.3808", period: "previous" },
-                { label: "Avg/Week", usd: "16,845", eth: "6.738", period: "average" },
-                { label: "Best Week", usd: "28,104", eth: "11.2416", period: "peak" },
-                { label: "52w Total", usd: "1,087,140", eth: "434.856", period: "total" },
-                { label: "Growth", usd: "+15.2%", eth: "+15.2%", period: "trend" }
-            ],
-            monthly: [
-                { label: "This Month", usd: "85,410", eth: "34.164", period: "current" },
-                { label: "Last Month", usd: "78,245", eth: "31.298", period: "previous" },
-                { label: "Avg/Month", usd: "72,150", eth: "28.86", period: "average" },
-                { label: "Best Month", usd: "124,568", eth: "49.827", period: "peak" },
-                { label: "12m Total", usd: "1,045,800", eth: "418.32", period: "total" },
-                { label: "YoY Growth", usd: "+27.4%", eth: "+27.4%", period: "trend" }
-            ],
-            yearly: [
-                { label: "YTD", usd: "1,045,800", eth: "418.32", period: "current" },
-                { label: "Last Year", usd: "820,450", eth: "328.18", period: "previous" },
-                { label: "Avg/Year", usd: "912,125", eth: "364.85", period: "average" },
-                { label: "All Time", usd: "20,847,392", eth: "8,338.96", period: "total" },
-                { label: "CAGR", usd: "+34.8%", eth: "+34.8%", period: "growth" },
-                { label: "ROI", usd: "2,084%", eth: "2,084%", period: "return" }
-            ]
+            second: { usd: "0.79", eth: "0.000316", label: "sec" },
+            minute: { usd: "47.40", eth: "0.01896", label: "min" },
+            hour: { usd: "2,844", eth: "1.1376", label: "hour" },
+            day: { usd: "68,256", eth: "27.3024", label: "day" },
+            week: { usd: "477,792", eth: "191.1168", label: "week" },
+            month: { usd: "2,047,680", eth: "819.072", label: "month" },
+            year: { usd: "24,572,160", eth: "9,828.864", label: "year" }
         };
 
         // Initialize Dashboard
         function initializeDashboard() {
             setupEventListeners();
-            updateTimeMetrics();
-            startDataRefresh();
+            updateTimeDisplay();
         }
 
-        // Setup event listeners
         function setupEventListeners() {
-            // Refresh interval
-            document.getElementById('refreshInterval').addEventListener('change', function(e) {
-                refreshInterval = parseInt(e.target.value);
-                startDataRefresh();
-            });
-
-            // Reinvestment slider
-            document.getElementById('reinvestmentSlider').addEventListener('input', function(e) {
-                document.getElementById('reinvestmentValue').textContent = e.target.value + '%';
-                updateReinvestmentMetrics(e.target.value);
-            });
+            // Time view selector
+            document.getElementById('timeViewSelect').addEventListener('change', updateTimeDisplay);
         }
 
-        // Switch currency
+        function updateTimeDisplay() {
+            const timeView = document.getElementById('timeViewSelect').value;
+            const data = timeProfitData[timeView];
+            
+            document.getElementById('timeDisplay').innerHTML = `
+                <span class="usd-display">$${data.usd}/${data.label}</span>
+                <span class="eth-display">${data.eth} ETH/${data.label}</span>
+            `;
+        }
+
+        // Wallet Connection System
+        async function connectWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ 
+                        method: 'eth_requestAccounts' 
+                    });
+                    
+                    const accountSelect = document.getElementById('accountSelect');
+                    accountSelect.innerHTML = '';
+                    
+                    accounts.forEach(account => {
+                        const option = document.createElement('option');
+                        option.value = account;
+                        option.textContent = `${account.substring(0, 6)}...${account.substring(38)}`;
+                        accountSelect.appendChild(option);
+                    });
+                    
+                    document.getElementById('accountSection').style.display = 'block';
+                    document.querySelector('.wallet-connect').textContent = '‚úÖ Wallet Connected';
+                    
+                } catch (error) {
+                    alert('Error connecting wallet: ' + error.message);
+                }
+            } else {
+                alert('MetaMask not detected! Please install MetaMask.');
+            }
+        }
+
+        function initiateWithdrawal() {
+            const amount = document.getElementById('withdrawalAmount').value;
+            const threshold = document.getElementById('withdrawalThreshold').value;
+            const time = document.getElementById('transferTime').value;
+            const mode = document.getElementById('withdrawalMode').value;
+            const account = document.getElementById('accountSelect').value;
+            
+            if (!amount || !account) {
+                alert('Please enter amount and select account');
+                return;
+            }
+            
+            alert(`Withdrawal initiated!\nAmount: $${amount}\nThreshold: $${threshold}\nTime: ${time}\nMode: ${mode}\nAccount: ${account.substring(0, 6)}...`);
+            
+            // Simulate withdrawal processing
+            document.querySelector('.withdraw-btn').textContent = '‚è≥ Processing...';
+            setTimeout(() => {
+                document.querySelector('.withdraw-btn').textContent = '‚úÖ Withdrawal Complete';
+            }, 2000);
+        }
+
         function switchCurrency(currency) {
             currentCurrency = currency;
             document.body.className = 'currency-' + currency;
@@ -757,83 +694,10 @@
                 option.classList.remove('active');
             });
             event.target.classList.add('active');
-            updateAllMetrics();
-        }
-
-        // Set time view
-        function setTimeView(view) {
-            currentTimeView = view;
-            document.querySelectorAll('.time-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            updateTimeMetrics();
-        }
-
-        // Update time-based metrics
-        function updateTimeMetrics() {
-            const container = document.getElementById('timeMetrics');
-            const data = timeProfitData[currentTimeView];
-            
-            container.innerHTML = data.map(metric => `
-                <div class="time-metric">
-                    <div class="time-label">${metric.label}</div>
-                    <div class="time-value">
-                        <span class="usd-display">$${metric.usd}</span>
-                        <span class="eth-display">${metric.eth} ETH</span>
-                    </div>
-                    <div class="time-period">${metric.period}</div>
-                </div>
-            `).join('');
-        }
-
-        // Update reinvestment metrics
-        function updateReinvestmentMetrics(percentage) {
-            // In a real implementation, this would update backend settings
-            console.log(`Profit reinvestment set to: ${percentage}%`);
-            
-            // Update related metrics visually
-            const growthImpact = (percentage / 100) * 0.5; // Simulated growth impact
-            document.querySelector('[data-metric="performance-delta"]').textContent = 
-                `+${(27.4 + growthImpact).toFixed(1)}%`;
-        }
-
-        // Update all metrics with live data
-        function updateAllMetrics() {
-            // Simulate live data updates
-            updateTimeMetrics();
-            
-            // Add small random fluctuations for realism
-            const elements = document.querySelectorAll('.metric-value');
-            elements.forEach(el => {
-                if (el.textContent.includes('$') || el.textContent.includes('ETH')) {
-                    const current = parseFloat(el.textContent.replace(/[$,ETH]/g, ''));
-                    if (!isNaN(current) && current > 10) {
-                        const change = (Math.random() - 0.5) * 0.02; // Small random change
-                        const newValue = current * (1 + change);
-                        
-                        if (el.textContent.includes('$')) {
-                            el.textContent = '$' + Math.round(newValue).toLocaleString();
-                        } else if (el.textContent.includes('ETH')) {
-                            el.textContent = newValue.toFixed(3) + ' ETH';
-                        }
-                    }
-                }
-            });
-        }
-
-        // Start data refresh interval
-        function startDataRefresh() {
-            clearInterval(window.refreshInterval);
-            window.refreshInterval = setInterval(updateAllMetrics, refreshInterval);
         }
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', initializeDashboard);
-        
-        console.log('Ìø≠ AINEXUS Professional Dashboard Loaded');
-        console.log('‚è∞ Time-based profit analytics active');
-        console.log('Ì¥Ñ Auto-refresh: ' + (refreshInterval/1000) + ' seconds');
     </script>
 </body>
 </html>
