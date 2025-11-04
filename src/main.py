@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 AINEXUS ENGINE - RENDER DEPLOYMENT ENTRY POINT
 Serves both the FastAPI dashboard and integrates with core engine
@@ -19,9 +20,9 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 try:
     # Import dashboard API
     from api.dashboard_controller import router as dashboard_router
-    print("✅ Dashboard API imported successfully")
+    print("Dashboard API imported successfully")
 except ImportError as e:
-    print(f"⚠️ Dashboard API import warning: {e}")
+    print(f"Dashboard API import warning: {e}")
 
 # Create FastAPI app
 app = FastAPI(
@@ -33,14 +34,14 @@ app = FastAPI(
 # Include dashboard API routes
 try:
     app.include_router(dashboard_router, prefix="/api", tags=["dashboard"])
-    print("✅ Dashboard routes mounted")
+    print("Dashboard routes mounted")
 except Exception as e:
-    print(f"⚠️ Dashboard routes warning: {e}")
+    print(f"Dashboard routes warning: {e}")
 
 # Serve static files for React dashboard
 if os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
-    print("✅ Static files mounted")
+    print("Static files mounted")
 
 @app.get("/")
 async def root():
@@ -82,5 +83,5 @@ async def deep_health_check():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    print(f"��� Starting AINexus Engine on port {port}")
+    print(f"Starting AINexus Engine on port {port}")
     uvicorn.run("main:app", host="0.0.0.0", port=port)
